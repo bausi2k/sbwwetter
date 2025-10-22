@@ -1,32 +1,40 @@
 /* style.css */
 
-/* ... (Alle alten Regeln bleiben unverändert) ... */
+/* Überschrift des Dashboards zentrieren */
 header {
     text-align: center;
     margin-bottom: 2rem;
 }
+
+/* Die großen Daten-Anzeigen (Live-Werte) */
 .data {
-    font-size: 2.5em; 
+    font-size: 2.5em; /* Standard-Größe für Zahlen */
     font-weight: bold;
     color: var(--pico-primary); 
     display: block; 
     margin-top: 1rem;
     text-align: center;
 }
+
+/* Verbindungsstatus-Badge hervorheben */
 #status {
     padding: 0.25rem 0.5rem;
     border-radius: var(--pico-border-radius);
 }
+
+/* Widget-Titel zentrieren */
 article header {
     text-align: center;
     font-size: 1.1em;
 }
+
+/* Definiert einen festen Rahmen für den Graphen */
 #chart-wrapper {
     position: relative; 
     height: 350px;      
 }
 
-/* Basis-Stil für Müll-Widgets (von letztem Mal) */
+/* Basis-Stil für Müll-Widgets (kleinere Schrift) */
 #muell-naechste,
 #muell-uebernaechste {
     font-size: 1.25em; 
@@ -39,13 +47,12 @@ article header {
 }
 
 
-/* --- NEUE FARBKLASSEN FÜR MÜLL-KACHELN --- */
+/* --- FARBKLASSEN FÜR MÜLL-KACHELN --- */
 
 /* Diese Klassen werden der <article>-Kachel hinzugefügt */
 .muell-rest, .muell-gelb, .muell-bio, .muell-papier {
-    /* Sanfter Farbübergang */
     transition: background-color 0.3s ease; 
-    border-radius: var(--pico-border-radius); /* Abgerundete Ecken */
+    border-radius: var(--pico-border-radius); 
 }
 
 /* Farben für die Kachel */
@@ -71,6 +78,6 @@ article header {
 .muell-gelb .data, .muell-gelb header,
 .muell-bio .data, .muell-bio header,
 .muell-papier .data, .muell-papier header {
-    color: inherit; /* Textfarbe von der Kachel erben */
-    font-weight: bold; /* Text wieder fett machen für Kontrast */
+    color: inherit; 
+    font-weight: bold; 
 }
