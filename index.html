@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feuersbrunn - Sonnenblumenweg</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <main class="container">
+
+        <header>
+            <h1>Wetterinformation</h1>
+            <p>Verbindungsstatus: <mark id="status">Verbinde...</mark></p>
+        </header>
+
+        <article id="chart-container">
+            <header><strong>Außentemperatur (24h Verlauf)</strong></header>
+            <canvas id="tempChartCanvas"></canvas> </article>
+
+        <div class="grid">
+            
+            <article>
+                <header><strong>Außentemperatur (Live)</strong></header>
+                <span id="aussen-temp" class="data">-- °C</span>
+            </article>
+
+            <article>
+                <header><strong>Luftfeuchtigkeit Außen</strong></header>
+                <span id="aussen-luft" class="data">-- %</span>
+            </article>
+
+            <article>
+                <header><strong>Regnet es?</strong></header>
+                <span id="regen-status" class="data">--</span>
+            </article>
+            
+        </div> </main>
+    
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>

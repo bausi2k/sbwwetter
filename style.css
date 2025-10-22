@@ -1,0 +1,34 @@
+/* style.css */
+
+/* Überschrift des Dashboards zentrieren */
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Die großen Daten-Anzeigen */
+.data {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: var(--pico-primary); /* Nutzt die Primärfarbe von Pico */
+    display: block; /* Stellt sicher, dass es eine eigene Zeile einnimmt */
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* Verbindungsstatus hervorheben */
+#status {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--pico-border-radius);
+}
+
+/* Widget-Titel zentrieren */
+article header {
+    text-align: center;
+    font-size: 1.1em;
+}
+
+/* NEU: Beschränkt die Höhe des Graphen-Containers */
+#chart-container {
+    max-height: 300px;
+}
