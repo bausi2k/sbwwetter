@@ -1,47 +1,76 @@
 /* style.css */
 
-/* Überschrift des Dashboards zentrieren */
+/* ... (Alle alten Regeln bleiben unverändert) ... */
 header {
     text-align: center;
     margin-bottom: 2rem;
 }
-
-/* Die großen Daten-Anzeigen (Live-Werte) */
 .data {
-    font-size: 2.5em; /* Standard-Größe für Zahlen */
+    font-size: 2.5em; 
     font-weight: bold;
     color: var(--pico-primary); 
     display: block; 
     margin-top: 1rem;
     text-align: center;
 }
-
-/* Verbindungsstatus-Badge hervorheben */
 #status {
     padding: 0.25rem 0.5rem;
     border-radius: var(--pico-border-radius);
 }
-
-/* Widget-Titel zentrieren */
 article header {
     text-align: center;
     font-size: 1.1em;
 }
-
-/* Definiert einen festen Rahmen für den Graphen */
 #chart-wrapper {
     position: relative; 
     height: 350px;      
 }
 
-/* NEUE REGEL: Kleinere Schrift für die Müll-Widgets */
+/* Basis-Stil für Müll-Widgets (von letztem Mal) */
 #muell-naechste,
 #muell-uebernaechste {
-    font-size: 1.25em; /* Kleiner als 2.5em, damit der Text passt */
-    font-weight: normal; /* Normal statt fett */
-    color: var(--pico-secondary); /* Etwas dezenter */
-    min-height: 2.5em; /* Sorgt für gleiche Höhe wie andere Boxen */
+    font-size: 1.25em; 
+    font-weight: normal; 
+    color: var(--pico-secondary); /* Standard-Textfarbe */
+    min-height: 2.5em; 
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+
+/* --- NEUE FARBKLASSEN FÜR MÜLL-KACHELN --- */
+
+/* Diese Klassen werden der <article>-Kachel hinzugefügt */
+.muell-rest, .muell-gelb, .muell-bio, .muell-papier {
+    /* Sanfter Farbübergang */
+    transition: background-color 0.3s ease; 
+    border-radius: var(--pico-border-radius); /* Abgerundete Ecken */
+}
+
+/* Farben für die Kachel */
+.muell-rest {
+    background-color: var(--pico-color-gray-700);
+    color: var(--pico-contrast); /* Textfarbe (hell) */
+}
+.muell-gelb {
+    background-color: var(--pico-color-amber-300);
+    color: var(--pico-primary-inverse); /* Textfarbe (dunkel) */
+}
+.muell-bio {
+    background-color: var(--pico-color-brown-500);
+    color: var(--pico-contrast); /* Textfarbe (hell) */
+}
+.muell-papier {
+    background-color: var(--pico-color-red-600);
+    color: var(--pico-contrast); /* Textfarbe (hell) */
+}
+
+/* Stellen sicher, dass der Text (.data) und der Header die Kachelfarbe erben */
+.muell-rest .data, .muell-rest header,
+.muell-gelb .data, .muell-gelb header,
+.muell-bio .data, .muell-bio header,
+.muell-papier .data, .muell-papier header {
+    color: inherit; /* Textfarbe von der Kachel erben */
+    font-weight: bold; /* Text wieder fett machen für Kontrast */
 }
