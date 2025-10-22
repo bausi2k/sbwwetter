@@ -47,30 +47,25 @@ article header {
 }
 
 
-/* --- HIER BEGINNT DER WICHTIGE (wahrscheinlich fehlende) TEIL --- */
-
-/* Diese Klassen werden der <article>-Kachel hinzugefügt */
-.muell-rest, .muell-gelb, .muell-bio, .muell-papier {
-    transition: background-color 0.3s ease; 
-    border-radius: var(--pico-border-radius); 
-}
+/* --- FARBKLASSEN FÜR MÜLL-KACHELN --- */
+/* ... (der .muell-rest, .muell-gelb... Block) ... */
 
 /* Farben für die Kachel */
 .muell-rest {
-    background-color: var(--pico-color-gray-700);
-    color: var(--pico-contrast); /* Textfarbe (hell) */
+    background-color: var(--pico-color-gray-700) !important;
+    color: var(--pico-contrast) !important; 
 }
 .muell-gelb {
-    background-color: var(--pico-color-amber-300);
-    color: var(--pico-primary-inverse); /* Textfarbe (dunkel) */
+    background-color: var(--pico-color-amber-300) !important;
+    color: var(--pico-primary-inverse) !important; 
 }
 .muell-bio {
-    background-color: var(--pico-color-brown-500);
-    color: var(--pico-contrast); /* Textfarbe (hell) */
+    background-color: var(--pico-color-brown-500) !important;
+    color: var(--pico-contrast) !important; 
 }
 .muell-papier {
-    background-color: var(--pico-color-red-600);
-    color: var(--pico-contrast); /* Textfarbe (hell) */
+    background-color: var(--pico-color-red-600) !important;
+    color: var(--pico-contrast) !important; 
 }
 
 /* Stellen sicher, dass der Text (.data) und der Header die Kachelfarbe erben */
@@ -78,6 +73,6 @@ article header {
 .muell-gelb .data, .muell-gelb header,
 .muell-bio .data, .muell-bio header,
 .muell-papier .data, .muell-papier header {
-    color: inherit; 
-    font-weight: bold; 
+    color: inherit !important; 
+    font-weight: bold !important; 
 }
