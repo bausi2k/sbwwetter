@@ -6,6 +6,7 @@
     <title>Feuersbrunn - Sonnenblumenweg</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+    
     <link rel="stylesheet" href="style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -15,13 +16,18 @@
     <main class="container">
 
         <header>
-            <h1>Wetterinformation</h1>
+            <h1>Wetterinformation - Feuersbrunn - Sonnenblumenweg</h1>
             <p>Verbindungsstatus: <mark id="status">Verbinde...</mark></p>
         </header>
 
-        <article id="chart-container">
+        <article>
             <header><strong>Außentemperatur (24h Verlauf)</strong></header>
-            <canvas id="tempChartCanvas"></canvas> </article>
+            
+            <div id="chart-wrapper">
+                <canvas id="tempChartCanvas"></canvas>
+            </div>
+            
+        </article>
 
         <div class="grid">
             
@@ -40,9 +46,7 @@
                 <span id="regen-status" class="data">--</span>
             </article>
             
-        </div> </main>
-    
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+        </div> </main> <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="app.js"></script>
 
 </body>

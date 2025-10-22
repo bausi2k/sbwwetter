@@ -6,17 +6,17 @@ header {
     margin-bottom: 2rem;
 }
 
-/* Die großen Daten-Anzeigen */
+/* Die großen Daten-Anzeigen (Live-Werte) */
 .data {
     font-size: 2.5em;
     font-weight: bold;
     color: var(--pico-primary); /* Nutzt die Primärfarbe von Pico */
-    display: block; /* Stellt sicher, dass es eine eigene Zeile einnimmt */
+    display: block; 
     margin-top: 1rem;
     text-align: center;
 }
 
-/* Verbindungsstatus hervorheben */
+/* Verbindungsstatus-Badge hervorheben */
 #status {
     padding: 0.25rem 0.5rem;
     border-radius: var(--pico-border-radius);
@@ -28,7 +28,10 @@ article header {
     font-size: 1.1em;
 }
 
-/* NEU: Beschränkt die Höhe des Graphen-Containers */
-#chart-container {
-    max-height: 300px;
+/* Definiert einen festen Rahmen für den Graphen,
+  um Überschneidungen zu verhindern.
+*/
+#chart-wrapper {
+    position: relative; /* Wichtig für die Responsivität von Chart.js */
+    height: 350px;      /* Feste Höhe für den Graphen */
 }
