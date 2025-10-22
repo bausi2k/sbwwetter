@@ -8,9 +8,9 @@ header {
 
 /* Die großen Daten-Anzeigen (Live-Werte) */
 .data {
-    font-size: 2.5em;
+    font-size: 2.5em; /* Standard-Größe für Zahlen */
     font-weight: bold;
-    color: var(--pico-primary); /* Nutzt die Primärfarbe von Pico */
+    color: var(--pico-primary); 
     display: block; 
     margin-top: 1rem;
     text-align: center;
@@ -28,10 +28,20 @@ article header {
     font-size: 1.1em;
 }
 
-/* Definiert einen festen Rahmen für den Graphen,
-  um Überschneidungen zu verhindern.
-*/
+/* Definiert einen festen Rahmen für den Graphen */
 #chart-wrapper {
-    position: relative; /* Wichtig für die Responsivität von Chart.js */
-    height: 350px;      /* Feste Höhe für den Graphen */
+    position: relative; 
+    height: 350px;      
+}
+
+/* NEUE REGEL: Kleinere Schrift für die Müll-Widgets */
+#muell-naechste,
+#muell-uebernaechste {
+    font-size: 1.25em; /* Kleiner als 2.5em, damit der Text passt */
+    font-weight: normal; /* Normal statt fett */
+    color: var(--pico-secondary); /* Etwas dezenter */
+    min-height: 2.5em; /* Sorgt für gleiche Höhe wie andere Boxen */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
