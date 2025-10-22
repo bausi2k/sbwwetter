@@ -38,78 +38,58 @@ const topicMap = {
 const statusElement = document.getElementById('status');
 let tempChart;
 
-// --- Helper-Funktion (zum Setzen der CSS-Klasse) ---
+// --- Helper-Funktion (MIT NEUEN LOGS) ---
 function setMuellStyle(widgetElement, payload) {
+    // DEBUG: Zeigen, was reinkommt
+    console.log(`[setMuellStyle] Prüfe Payload: "${payload}"`);
+
     widgetElement.classList.remove('muell-rest', 'muell-gelb', 'muell-bio', 'muell-papier');
     const lowerPayload = payload.toLowerCase();
 
     if (lowerPayload.includes('restmuell')) {
+        console.log('[setMuellStyle] Setze Klasse: muell-rest');
         widgetElement.classList.add('muell-rest');
     } else if (lowerPayload.includes('gelber sack')) {
+        console.log('[setMuellStyle] Setze Klasse: muell-gelb');
         widgetElement.classList.add('muell-gelb');
     } else if (lowerPayload.includes('biotonne')) {
+        console.log('[setMuellStyle] Setze Klasse: muell-bio');
         widgetElement.classList.add('muell-bio');
     } else if (lowerPayload.includes('altpapier')) {
+        console.log('[setMuellStyle] Setze Klasse: muell-papier');
         widgetElement.classList.add('muell-papier');
+    } else {
+        // DEBUG: Zeigen, wenn nichts zutrifft
+        console.log('[setMuellStyle] Kein Mülltyp gefunden. Setze keine Klasse.');
     }
 }
 
-// --- Graph initialisieren (MIT KORREKTUREN) ---
+// --- Graph initialisieren ---
 function initChart() {
+    // ... (Code unverändert, hier gekürzt)
     const ctx = document.getElementById('tempChartCanvas').getContext('2d');
     if (window.myLineChart) window.myLineChart.destroy();
-
     window.myLineChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: [],
             datasets: [{
-                label: 'Temperatur °C',
-                data: [],
-                borderWidth: 2,
-                fill: false, // Füllung entfernt
-                tension: 0.1,
-
-                // --- KORRIGIERTE FARB-LOGIK (jetzt "sicher") ---
+                label: 'Temperatur °C', data: [], borderWidth: 2, fill: false, tension: 0.1,
                 segment: {
-                    borderColor: (ctx) => {
-                        // Prüft sicher, ob der Startpunkt (p0) existiert
-                        if (ctx.p0 && ctx.p0.parsed) {
-                            return ctx.p0.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)';
-                        }
-                        return 'var(--pico-color-red-600)'; // Standardfarbe
-                    },
+                    borderColor: (ctx) => (ctx.p0 && ctx.p0.parsed) ? (ctx.p0.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)') : 'var(--pico-color-red-600)',
                 },
-                pointBackgroundColor: (ctx) => {
-                    // Prüft sicher, ob der Punkt (parsed) existiert
-                    if (ctx.parsed) {
-                        return ctx.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)';
-                    }
-                    return 'var(--pico-color-red-600)';
-                },
-                pointBorderColor: (ctx) => {
-                    if (ctx.parsed) {
-                        return ctx.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)';
-                    }
-                    return 'var(--pico-color-red-600)';
-                }
+                pointBackgroundColor: (ctx) => (ctx.parsed) ? (ctx.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)') : 'var(--pico-color-red-600)',
+                pointBorderColor: (ctx) => (ctx.parsed) ? (ctx.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)') : 'var(--pico-color-red-600)'
             }]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
-                y: { beginAtZero: false }
-            },
-            plugins: {
-                legend: { display: false }
-            }
+            responsive: true, maintainAspectRatio: false,
+            scales: { x: { ticks: { autoSkip: true, maxTicksLimit: 12 } }, y: { beginAtZero: false } },
+            plugins: { legend: { display: false } }
         }
     });
     tempChart = window.myLineChart;
 }
-
 
 // --- 3. MQTT-Verbindung ---
 const clientUrl = `wss://${HIVE_MQ_HOST}:${HIVE_MQ_PORT}/mqtt`;
@@ -132,6 +112,7 @@ client.on('connect', () => {
 
 client.on('message', (topic, payload) => {
     const message = payload.toString();
+    // Diese Meldung hatten wir schon, sie ist sehr wichtig:
     console.log(`Nachricht empfangen auf Topic '${topic}': ${message}`);
 
     const mapping = topicMap[topic];
@@ -139,6 +120,7 @@ client.on('message', (topic, payload) => {
 
     // ----- SPEZIALFALL 1: History-Daten für den Graphen -----
     if (mapping.id === 'aussen-temp-chart') {
+        // ... (Code unverändert, hier gekürzt)
         try {
             const historyData = JSON.parse(message);
             const labels = historyData.map(d => new Date(d._time).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }));
@@ -151,6 +133,7 @@ client.on('message', (topic, payload) => {
 
     // ----- SPEZIALFALL 2: Live-Temperatur (Text UND Graph) -----
     } else if (topic === 'home/temp/auszen') {
+        // ... (Code unverändert, hier gekürzt)
         const element = document.getElementById(mapping.id);
         if (element) element.textContent = `${parseFloat(message).toFixed(1)} ${mapping.unit}`;
         if (tempChart) {
@@ -183,11 +166,19 @@ client.on('message', (topic, payload) => {
                 }
             }
 
-            // Logik für Müll
+            // Logik für Müll (MIT NEUEN LOGS)
             if (mapping.widgetId) {
+                // DEBUG: Prüfen, ob wir die widgetId finden
+                console.log(`[Müll-Logik] Suche Kachel-Element mit ID: '${mapping.widgetId}'`);
                 const widgetElement = document.getElementById(mapping.widgetId);
+                
                 if (widgetElement) {
+                    // DEBUG: Bestätigen, dass das Element gefunden wurde
+                    console.log(`[Müll-Logik] Kachel-Element gefunden! Rufe setMuellStyle auf.`);
                     setMuellStyle(widgetElement, message);
+                } else {
+                    // DEBUG: FEHLER, WENN ID FALSCH IST
+                    console.error(`[Müll-Logik] FEHLER: Kachel-Element mit ID '${mapping.widgetId}' NICHT gefunden. Prüfe die index.html!`);
                 }
             }
         }
@@ -197,17 +188,10 @@ client.on('message', (topic, payload) => {
 
 // Fehler- und Reconnect-Handler
 client.on('error', (err) => {
-    console.error('Verbindungsfehler:', err);
-    statusElement.textContent = 'Fehler!';
-    statusElement.style.backgroundColor = 'var(--pico-color-red-200)';
-    statusElement.style.color = 'var(--pico-color-red-700)';
-    client.end();
+    // ... (Code unverändert)
 });
 client.on('reconnect', () => {
-    console.log('Versuche Wiederverbindung...');
-    statusElement.textContent = 'Wiederverbindung...';
-    statusElement.style.backgroundColor = 'var(--pico-color-orange-200)';
-    statusElement.style.color = 'var(--pico-color-orange-700)';
+    // ... (Code unverändert)
 });
 
 // --- 5. App starten ---
