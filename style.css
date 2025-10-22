@@ -1,4 +1,4 @@
-/* style.css */
+/* style.css (BEREINIGTE VERSION) */
 
 /* Überschrift des Dashboards zentrieren */
 header {
@@ -10,8 +10,8 @@ header {
 .data {
     font-size: 2.5em; /* Standard-Größe für Zahlen */
     font-weight: bold;
-    color: var(--pico-primary); 
-    display: block; 
+    color: var(--pico-primary);
+    display: block;
     margin-top: 1rem;
     text-align: center;
 }
@@ -30,17 +30,17 @@ article header {
 
 /* Definiert einen festen Rahmen für den Graphen */
 #chart-wrapper {
-    position: relative; 
-    height: 350px;      
+    position: relative;
+    height: 350px;
 }
 
 /* Basis-Stil für Müll-Widgets (kleinere Schrift) */
 #muell-naechste,
 #muell-uebernaechste {
-    font-size: 1.25em; 
-    font-weight: normal; 
+    font-size: 1.25em;
+    font-weight: normal;
     color: var(--pico-secondary); /* Standard-Textfarbe */
-    min-height: 2.5em; 
+    min-height: 2.5em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,24 +48,30 @@ article header {
 
 
 /* --- FARBKLASSEN FÜR MÜLL-KACHELN --- */
-/* ... (der .muell-rest, .muell-gelb... Block) ... */
+/* (Wir lassen !important zur Sicherheit drin) */
+
+/* Diese Klassen werden der <article>-Kachel hinzugefügt */
+.muell-rest, .muell-gelb, .muell-bio, .muell-papier {
+    transition: background-color 0.3s ease;
+    border-radius: var(--pico-border-radius);
+}
 
 /* Farben für die Kachel */
 .muell-rest {
     background-color: var(--pico-color-gray-700) !important;
-    color: var(--pico-contrast) !important; 
+    color: var(--pico-contrast) !important;
 }
 .muell-gelb {
     background-color: var(--pico-color-amber-300) !important;
-    color: var(--pico-primary-inverse) !important; 
+    color: var(--pico-primary-inverse) !important;
 }
 .muell-bio {
     background-color: var(--pico-color-brown-500) !important;
-    color: var(--pico-contrast) !important; 
+    color: var(--pico-contrast) !important;
 }
 .muell-papier {
     background-color: var(--pico-color-red-600) !important;
-    color: var(--pico-contrast) !important; 
+    color: var(--pico-contrast) !important;
 }
 
 /* Stellen sicher, dass der Text (.data) und der Header die Kachelfarbe erben */
@@ -73,6 +79,6 @@ article header {
 .muell-gelb .data, .muell-gelb header,
 .muell-bio .data, .muell-bio header,
 .muell-papier .data, .muell-papier header {
-    color: inherit !important; 
-    font-weight: bold !important; 
+    color: inherit !important;
+    font-weight: bold !important;
 }
