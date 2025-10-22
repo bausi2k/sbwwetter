@@ -1,48 +1,46 @@
 // --- 1. Konfiguration ---
-const HIVE_MQ_HOST = 'bb23c26981ce486a9de6a8d83cff9f90.s1.eu.hivemq.cloud'; 
-const HIVE_MQ_PORT = 8884; 
-const HIVE_MQ_USER = 'sbwwetter'; 
-const HIVE_MQ_PASS = 'pbd7chu6kba!zrd2GTG';     
+const HIVE_MQ_HOST = 'bb23c26981ce486a9de6a8d83cff9f90.s1.eu.hivemq.cloud';
+const HIVE_MQ_PORT = 8884;
+const HIVE_MQ_USER = 'sbwwetter';
+const HIVE_MQ_PASS = 'pbd7chu6kba!zrd2GTG';
 
 // --- Flexible Topic-Zuordnung ---
 const topicMap = {
     'home/temp/auszen': {
-        id: 'aussen-temp', 
+        id: 'aussen-temp',
         unit: ' °C'
     },
     'home/luftfeuchte/aktuell': {
-        id: 'aussen-luft', 
+        id: 'aussen-luft',
         unit: ' %'
     },
-    'home/regen/status': { 
-        id: 'regen-status', 
+    'home/regen/status': {
+        id: 'regen-status',
         unit: '',
         formatter: (payload) => (payload === '1' ? 'Ja 🌧️' : 'Nein ☀️')
     },
     'haus/historie/aussentemperatur_24h': {
-        id: 'aussen-temp-chart' 
+        id: 'aussen-temp-chart'
     },
     'gasse/müll/nächste': {
-        id: 'muell-naechste', 
-        unit: '', 
-        widgetId: 'widget-muell-naechste' 
+        id: 'muell-naechste',
+        unit: '',
+        widgetId: 'widget-muell-naechste'
     },
     'gasse/müll/übernächste': {
-        id: 'muell-uebernaechste', 
+        id: 'muell-uebernaechste',
         unit: '',
-        widgetId: 'widget-muell-uebernaechste' 
+        widgetId: 'widget-muell-uebernaechste'
     }
 };
 
 // --- 2. Globale Variablen ---
 const statusElement = document.getElementById('status');
-let tempChart; 
+let tempChart;
 
 // --- Helper-Funktion (zum Setzen der CSS-Klasse) ---
 function setMuellStyle(widgetElement, payload) {
     widgetElement.classList.remove('muell-rest', 'muell-gelb', 'muell-bio', 'muell-papier');
-
-    // Robust durch Umwandlung in Kleinbuchstaben
     const lowerPayload = payload.toLowerCase();
 
     if (lowerPayload.includes('restmuell')) {
@@ -56,60 +54,55 @@ function setMuellStyle(widgetElement, payload) {
     }
 }
 
-// --- Graph initialisieren (HIER SIND DIE ÄNDERUNGEN) ---
+// --- Graph initialisieren (MIT KORREKTUREN) ---
 function initChart() {
     const ctx = document.getElementById('tempChartCanvas').getContext('2d');
     if (window.myLineChart) window.myLineChart.destroy();
-    
+
     window.myLineChart = new Chart(ctx, {
         type: 'line',
-        data: { 
-            labels: [], 
-            datasets: [{ 
-                label: 'Temperatur °C', 
-                data: [], 
-                borderWidth: 2, 
-                
-                // --- ÄNDERUNG 1: Füllung entfernt ---
-                fill: false, 
-                
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Temperatur °C',
+                data: [],
+                borderWidth: 2,
+                fill: false, // Füllung entfernt
                 tension: 0.1,
-                
-                // --- ÄNDERUNG 2: Bedingte Farben ---
+
+                // --- KORRIGIERTE FARB-LOGIK (jetzt "sicher") ---
                 segment: {
-                    // Färbt die LINIE zwischen den Punkten
                     borderColor: (ctx) => {
-                        // ctx.p0 ist der Startpunkt des Liniensegments
-                        if (ctx.p0.parsed.y < 0) {
-                            return 'var(--pico-color-blue-500)'; // Blau für < 0
+                        // Prüft sicher, ob der Startpunkt (p0) existiert
+                        if (ctx.p0 && ctx.p0.parsed) {
+                            return ctx.p0.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)';
                         }
-                        return 'var(--pico-color-red-600)'; // Rot für >= 0
+                        return 'var(--pico-color-red-600)'; // Standardfarbe
                     },
                 },
-                // Färbt die PUNKTE selbst
                 pointBackgroundColor: (ctx) => {
-                    if (ctx.parsed.y < 0) {
-                        return 'var(--pico-color-blue-500)';
+                    // Prüft sicher, ob der Punkt (parsed) existiert
+                    if (ctx.parsed) {
+                        return ctx.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)';
                     }
                     return 'var(--pico-color-red-600)';
                 },
-                pointBorderColor: (ctx) => { // Stellt sicher, dass auch der Punkt-Rand passt
-                    if (ctx.parsed.y < 0) {
-                        return 'var(--pico-color-blue-500)';
+                pointBorderColor: (ctx) => {
+                    if (ctx.parsed) {
+                        return ctx.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)';
                     }
                     return 'var(--pico-color-red-600)';
                 }
-            }] 
+            }]
         },
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            scales: { 
-                x: { ticks: { autoSkip: true, maxTicksLimit: 12 }}, 
-                // Wichtig: beginAtZero: false, damit Minusgrade gut sichtbar sind
-                y: { beginAtZero: false } 
-            }, 
-            plugins: { 
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
+                y: { beginAtZero: false }
+            },
+            plugins: {
                 legend: { display: false }
             }
         }
@@ -127,7 +120,7 @@ const client = mqtt.connect(clientUrl, options);
 // --- 4. Event-Handler ---
 client.on('connect', () => {
     console.log('Erfolgreich mit HiveMQ verbunden!');
-    statusElement.textContent = 'Verbunden ✅'; // Dein angepasster Text
+    statusElement.textContent = 'Verbunden ✅';
     statusElement.style.backgroundColor = 'var(--pico-color-green-200)';
     statusElement.style.color = 'var(--pico-color-green-700)';
     const topicsToSubscribe = Object.keys(topicMap);
@@ -142,20 +135,20 @@ client.on('message', (topic, payload) => {
     console.log(`Nachricht empfangen auf Topic '${topic}': ${message}`);
 
     const mapping = topicMap[topic];
-    if (!mapping) return; 
+    if (!mapping) return;
 
     // ----- SPEZIALFALL 1: History-Daten für den Graphen -----
     if (mapping.id === 'aussen-temp-chart') {
         try {
-            const historyData = JSON.parse(message); 
+            const historyData = JSON.parse(message);
             const labels = historyData.map(d => new Date(d._time).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }));
-            const dataPoints = historyData.map(d => d._value.toFixed(1)); 
+            const dataPoints = historyData.map(d => d._value.toFixed(1));
             tempChart.data.labels = labels;
             tempChart.data.datasets[0].data = dataPoints;
             tempChart.update();
             console.log('Graph mit 24h-Daten gefüllt.');
         } catch (e) { console.error('Fehler beim Parsen der History-JSON:', e); }
-    
+
     // ----- SPEZIALFALL 2: Live-Temperatur (Text UND Graph) -----
     } else if (topic === 'home/temp/auszen') {
         const element = document.getElementById(mapping.id);
@@ -169,7 +162,7 @@ client.on('message', (topic, payload) => {
                 tempChart.update();
             }
         }
-        
+
     // ----- STANDARD-FALL: Alle anderen Widgets (Luftfeuchte, Regen, MÜLL) -----
     } else {
         const element = document.getElementById(mapping.id);
@@ -180,8 +173,8 @@ client.on('message', (topic, payload) => {
             }
             const unit = mapping.unit || '';
             element.textContent = displayValue + unit;
-            
-            // Styling für Regen (unverändert)
+
+            // Styling für Regen
             if (topic === 'home/regen/status') {
                 if (displayValue.includes('Ja')) {
                     element.style.color = 'var(--pico-color-blue-500)';
@@ -190,7 +183,7 @@ client.on('message', (topic, payload) => {
                 }
             }
 
-            // Logik für Müll (unverändert)
+            // Logik für Müll
             if (mapping.widgetId) {
                 const widgetElement = document.getElementById(mapping.widgetId);
                 if (widgetElement) {
