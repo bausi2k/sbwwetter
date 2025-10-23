@@ -7,7 +7,7 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
     
-    <link rel="stylesheet" href="style.css?v=6">
+    <link rel="stylesheet" href="style.css?v=7">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -20,7 +20,6 @@
             <p>Verbindungsstatus: <mark id="status">Verbinde...</mark></p>
         </header>
 
-
         <div class="grid" id="row-1">
             <article id="widget-muell-naechste">
                 <header><strong>Nächste Müllabholung</strong></header>
@@ -32,7 +31,6 @@
                 <span id="unwetter-warnung" class="data">--</span>
             </article>
         </div>
-
 
         <div class="grid" id="row-2">
             <article>
@@ -51,7 +49,6 @@
             </article>
         </div>
 
-
         <article>
             <header><strong>Außentemperatur (24h Verlauf)</strong></header>
             <div id="chart-wrapper">
@@ -59,7 +56,7 @@
             </div>
         </article>
 
-        </main> 
+    </main> 
     
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="app.js"></script>

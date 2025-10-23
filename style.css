@@ -1,60 +1,18 @@
-/* style.css (BEREINIGTE VERSION V6) */
+/* style.css (BEREINIGTE VERSION V7) */
 
-/* Überschrift des Dashboards zentrieren */
-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-/* Die großen Daten-Anzeigen (Live-Werte) */
-.data {
-    font-size: 2.5em;
-    font-weight: bold;
-    color: var(--pico-primary);
-    display: block;
-    margin-top: 1rem;
-    text-align: center;
-}
-
-/* Verbindungsstatus-Badge hervorheben */
-#status {
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--pico-border-radius);
-}
-
-/* Widget-Titel zentrieren */
-article header {
-    text-align: center;
-    font-size: 1.1em;
-}
-
-/* Definiert einen festen Rahmen für den Graphen */
-#chart-wrapper {
-    position: relative;
-    height: 350px;
-}
+/* ... (Alle Regeln für header, .data, #status, article header, #chart-wrapper bleiben gleich) ... */
+header { text-align: center; margin-bottom: 2rem; }
+.data { font-size: 2.5em; font-weight: bold; color: var(--pico-primary); display: block; margin-top: 1rem; text-align: center; }
+#status { padding: 0.25rem 0.5rem; border-radius: var(--pico-border-radius); }
+article header { text-align: center; font-size: 1.1em; }
+#chart-wrapper { position: relative; height: 350px; }
 
 /* --- NEUE LAYOUT-REGELN --- */
-
-/* Sorgt für etwas Abstand zwischen den Zeilen-Blöcken */
-.grid {
-    margin-bottom: 1.5rem;
-}
-
-/* Desktop-Layout (alles über 768px Breite) */
+.grid { margin-bottom: 1.5rem; }
 @media (min-width: 768px) {
-    
-    /* Zeile 1: 2 Spalten */
-    #row-1 {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    /* Zeile 2: 3 Spalten */
-    #row-2 {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
+    #row-1 { grid-template-columns: 1fr 1fr; }
+    #row-2 { grid-template-columns: 1fr 1fr 1fr; }
 }
-
 
 /* --- MÜLL & UNWETTER STILE --- */
 
@@ -68,49 +26,18 @@ article header {
     justify-content: center;
 }
 
-/* Restmüll */
-article.muell-rest {
-    background-color: #fbfcfc !important;
-    border: 2px solid #4a4a4a !important;
-}
-article.muell-rest header strong,
-article.muell-rest .data {
-    color: #2b2b2b !important;
-    font-weight: bold;
-}
+/* ... (Alle Müll-Farbklassen .muell-rest, .muell-gelb, .muell-papier bleiben gleich) ... */
+article.muell-rest { background-color: #fbfcfc !important; border: 2px solid #4a4a4a !important; }
+article.muell-rest header strong, article.muell-rest .data { color: #2b2b2b !important; font-weight: bold; }
+article.muell-gelb { background-color: #fbfcfc !important; border: 2px solid #ffd700 !important; }
+article.muell-gelb header strong, article.muell-gelb .data { color: #e6b800 !important; font-weight: bold; }
+article.muell-papier { background-color: #fbfcfc !important; border: 2px solid #dc3545 !important; }
+article.muell-papier header strong, article.muell-papier .data { color: #dc3545 !important; font-weight: bold; }
+article.muell-bio { background-color: #fbfcfc !important; border: 2px solid #8b4513 !important; }
+article.muell-bio header strong, article.muell-bio .data { color: #8b4513 !important; font-weight: bold; }
 
-/* Gelber Sack */
-article.muell-gelb {
-    background-color: #fbfcfc !important;
-    border: 2px solid #ffd700 !important;
-}
-article.muell-gelb header strong,
-article.muell-gelb .data {
-    color: #e6b800 !important;
-    font-weight: bold;
-}
 
-/* Altpapier */
-article.muell-papier {
-    background-color: #fbfcfc !important;
-    border: 2px solid #dc3545 !important;
-}
-article.muell-papier header strong,
-article.muell-papier .data {
-    color: #dc3545 !important;
-    font-weight: bold;
-}
-
-/* Biotonne (wird derzeit nicht verwendet) */
-article.muell-bio {
-    background-color: #fbfcfc !important;
-    border: 2px solid #8b4513 !important;
-}
-article.muell-bio header strong,
-article.muell-bio .data {
-    color: #8b4513 !important;
-    font-weight: bold;
-}
+/* --- AKTUALISIERTE UNWETTER-STILE --- */
 
 /* Basis-Stil für Unwetter-Text */
 #unwetter-warnung {
@@ -122,14 +49,36 @@ article.muell-bio .data {
     justify-content: center;
 }
 
-/* Aktive Warnung (Roter Rahmen) */
-article.unwetter-aktiv {
+/* Warnung ORANGE */
+article.unwetter-aktiv-orange {
     background-color: #fbfcfc !important;
-    border: 2px solid #dc3545 !important; 
+    border: 2px solid #fd7e14 !important; /* Orange */
 }
-article.unwetter-aktiv header strong,
-article.unwetter-aktiv .data {
+article.unwetter-aktiv-orange header strong,
+article.unwetter-aktiv-orange .data {
+    color: #fd7e14 !important;
+    font-weight: bold;
+}
+
+/* Warnung ROT (gleiche Farbe wie Altpapier) */
+article.unwetter-aktiv-rot {
+    background-color: #fbfcfc !important;
+    border: 2px solid #dc3545 !important; /* Rot */
+}
+article.unwetter-aktiv-rot header strong,
+article.unwetter-aktiv-rot .data {
     color: #dc3545 !important;
+    font-weight: bold;
+}
+
+/* Warnung VIOLETT */
+article.unwetter-aktiv-violett {
+    background-color: #fbfcfc !important;
+    border: 2px solid #6f42c1 !important; /* Violett */
+}
+article.unwetter-aktiv-violett header strong,
+article.unwetter-aktiv-violett .data {
+    color: #6f42c1 !important;
     font-weight: bold;
 }
 
