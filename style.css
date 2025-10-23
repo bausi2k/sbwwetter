@@ -1,4 +1,4 @@
-/* style.css (BEREINIGTE VERSION) */
+/* style.css (MIT KORREKTEN PICO V2 VARIABLEN) */
 
 /* Überschrift des Dashboards zentrieren */
 header {
@@ -8,7 +8,7 @@ header {
 
 /* Die großen Daten-Anzeigen (Live-Werte) */
 .data {
-    font-size: 2.5em; /* Standard-Größe für Zahlen */
+    font-size: 2.5em;
     font-weight: bold;
     color: var(--pico-primary);
     display: block;
@@ -39,45 +39,63 @@ article header {
 #muell-uebernaechste {
     font-size: 1.25em;
     font-weight: normal;
-    color: var(--pico-secondary); /* Standard-Textfarbe */
     min-height: 2.5em;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-
 /* --- FARBKLASSEN FÜR MÜLL-KACHELN --- */
+/* WICHTIG: Verwende Standard-Farben statt nicht existierender Pico-Variablen */
 
-/* Diese Klassen werden der <article>-Kachel hinzugefügt */
-.muell-rest, .muell-gelb, .muell-bio, .muell-papier {
-    transition: background-color 0.3s ease;
-    border-radius: var(--pico-border-radius);
-}
-
-/* Farben für die Kachel */
-.muell-rest {
-    background-color: var(--pico-color-gray-700);
-    color: var(--pico-contrast); /* Textfarbe (hell) */
-}
-.muell-gelb {
-    background-color: var(--pico-color-amber-300);
-    color: var(--pico-primary-inverse); /* Textfarbe (dunkel) */
-}
-.muell-bio {
-    background-color: var(--pico-color-brown-500);
-    color: var(--pico-contrast); /* Textfarbe (hell) */
-}
-.muell-papier {
-    background-color: var(--pico-color-red-600);
-    color: var(--pico-contrast); /* Textfarbe (hell) */
+/* Restmüll - Grau/Schwarz */
+article.muell-rest {
+    background-color: #4a4a4a !important;
+    color: #ffffff !important;
+    border: 2px solid #666 !important;
 }
 
-/* Stellen sicher, dass der Text (.data) und der Header die Kachelfarbe erben */
-.muell-rest .data, .muell-rest header,
-.muell-gelb .data, .muell-gelb header,
-.muell-bio .data, .muell-bio header,
-.muell-papier .data, .muell-papier header {
-    color: inherit;
+article.muell-rest header,
+article.muell-rest .data {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+/* Gelber Sack */
+article.muell-gelb {
+    background-color: #ffd700 !important;
+    color: #000000 !important;
+    border: 2px solid #ffed4e !important;
+}
+
+article.muell-gelb header,
+article.muell-gelb .data {
+    color: #000000 !important;
+    font-weight: bold;
+}
+
+/* Biotonne - Braun */
+article.muell-bio {
+    background-color: #8b4513 !important;
+    color: #ffffff !important;
+    border: 2px solid #a0522d !important;
+}
+
+article.muell-bio header,
+article.muell-bio .data {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+/* Altpapier - Blau */
+article.muell-papier {
+    background-color: #1e90ff !important;
+    color: #ffffff !important;
+    border: 2px solid #4169e1 !important;
+}
+
+article.muell-papier header,
+article.muell-papier .data {
+    color: #ffffff !important;
     font-weight: bold;
 }
