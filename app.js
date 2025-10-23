@@ -41,9 +41,11 @@ let tempChart;
 // --- Helper-Funktion (zum Setzen der CSS-Klasse) ---
 function setMuellStyle(widgetElement, payload) {
     widgetElement.classList.remove('muell-rest', 'muell-gelb', 'muell-bio', 'muell-papier');
-    const lowerPayload = payload.toLowerCase();
+    const lowerPayload = payload.trim().toLowerCase(); // ← TRIM hinzufügen
+    
+    console.log(`Prüfe Payload: "${lowerPayload}"`); // ← DEBUG-LOG
 
-    if (lowerPayload.includes('restmuell')) {
+    if (lowerPayload.includes('restmüll')) {  // ← Beachte: "ü" statt "ue"
         widgetElement.classList.add('muell-rest');
     } else if (lowerPayload.includes('gelber sack')) {
         widgetElement.classList.add('muell-gelb');
@@ -145,34 +147,36 @@ client.on('message', (topic, payload) => {
         }
 
     // ----- STANDARD-FALL: Alle anderen Widgets (Luftfeuchte, Regen, MÜLL) -----
-    } else {
-        const element = document.getElementById(mapping.id);
-        if (element) {
-            let displayValue = message;
-            if (mapping.formatter) {
-                displayValue = mapping.formatter(message);
-            }
-            const unit = mapping.unit || '';
-            element.textContent = displayValue + unit;
+	// ----- STANDARD-FALL: Alle anderen Widgets -----
+	} else {
+	    const element = document.getElementById(mapping.id);
+	    if (element) {
+	        let displayValue = message;
+	        if (mapping.formatter) {
+	            displayValue = mapping.formatter(message);
+	        }
+	        const unit = mapping.unit || '';
+	        element.textContent = displayValue + unit;
 
-            // Styling für Regen
-            if (topic === 'home/regen/status') {
-                if (displayValue.includes('Ja')) {
-                    element.style.color = 'var(--pico-color-blue-500)';
-                } else {
-                    element.style.color = 'var(--pico-color-orange-500)';
-                }
-            }
+	        // Styling für Regen
+	        if (topic === 'home/regen/status') {
+	            if (displayValue.includes('Ja')) {
+	                element.style.color = 'var(--pico-color-blue-500)';
+	            } else {
+	                element.style.color = 'var(--pico-color-orange-500)';
+	            }
+	        }
 
-            // Logik für Müll
-            if (mapping.widgetId) {
-                const widgetElement = document.getElementById(mapping.widgetId);
-                if (widgetElement) {
-                    setMuellStyle(widgetElement, message);
-                }
-            }
-        }
-    }
+	        // Logik für Müll - VERWENDE message.trim() und toLowerCase()
+	        if (mapping.widgetId) {
+	            const widgetElement = document.getElementById(mapping.widgetId);
+	            if (widgetElement) {
+	                console.log(`Müll-Styling für ${topic}: "${message}"`); // ← DEBUG
+	                setMuellStyle(widgetElement, message.trim());
+	            }
+	        }
+	    }
+	}
 });
 
 
