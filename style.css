@@ -1,4 +1,4 @@
-/* style.css (BEREINIGTE VERSION MIT DEINEM DESIGN) */
+/* style.css (MIT KORREKTEN PICO V2 VARIABLEN) */
 
 /* Überschrift des Dashboards zentrieren */
 header {
@@ -39,55 +39,59 @@ article header {
 #muell-uebernaechste {
     font-size: 1.25em;
     font-weight: normal;
-    color: var(--pico-secondary); /* Standard-Textfarbe (wird überschrieben) */
     min-height: 2.5em;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* --- FARBKLASSEN FÜR MÜLL-KACHELN (DEIN DESIGN) --- */
+/* --- FARBKLASSEN FÜR MÜLL-KACHELN --- */
+/* Farbiger Text auf hellem Hintergrund */
 
 /* Restmüll - Schwarzer Text */
 article.muell-rest {
-    background-color: #fbfcfc;
-    border: 2px solid #4a4a4a;
+    background-color: #fbfcfc !important;
+    border: 2px solid #4a4a4a !important;
 }
+
 article.muell-rest header strong,
 article.muell-rest .data {
-    color: #2b2b2b;
+    color: #2b2b2b !important;
     font-weight: bold;
 }
 
 /* Gelber Sack - Gelber Text */
 article.muell-gelb {
-    background-color: #fbfcfc;
-    border: 2px solid #ffd700;
+    background-color: #fbfcfc !important;
+    border: 2px solid #ffd700 !important;
 }
+
 article.muell-gelb header strong,
 article.muell-gelb .data {
-    color: #e6b800;
+    color: #e6b800 !important;
     font-weight: bold;
 }
 
 /* Biotonne - Brauner Text */
 article.muell-bio {
-    background-color: #fbfcfc;
-    border: 2px solid #8b4513;
+    background-color: #fbfcfc !important;
+    border: 2px solid #8b4513 !important;
 }
+
 article.muell-bio header strong,
 article.muell-bio .data {
-    color: #8b4513;
+    color: #8b4513 !important;
     font-weight: bold;
 }
 
 /* Altpapier - Roter Text */
 article.muell-papier {
-    background-color: #fbfcfc;
-    border: 2px solid #dc3545;
+    background-color: #fbfcfc !important;
+    border: 2px solid #dc3545 !important;
 }
+
 article.muell-papier header strong,
 article.muell-papier .data {
-    color: #dc3545;
+    color: #dc3545 !important;
     font-weight: bold;
 }
