@@ -1,4 +1,4 @@
-/* style.css (MIT KORREKTEN PICO V2 VARIABLEN) */
+/* style.css (BEREINIGTE VERSION V5) */
 
 /* Überschrift des Dashboards zentrieren */
 header {
@@ -35,8 +35,7 @@ article header {
 }
 
 /* Basis-Stil für Müll-Widgets (kleinere Schrift) */
-#muell-naechste,
-#muell-uebernaechste {
+#muell-naechste {
     font-size: 1.25em;
     font-weight: normal;
     min-height: 2.5em;
@@ -45,53 +44,76 @@ article header {
     justify-content: center;
 }
 
-/* --- FARBKLASSEN FÜR MÜLL-KACHELN --- */
-/* Farbiger Text auf hellem Hintergrund */
+/* --- MÜLL FARBKLASSEN (DEIN DESIGN) --- */
 
-/* Restmüll - Schwarzer Text */
+/* Restmüll */
 article.muell-rest {
     background-color: #fbfcfc !important;
     border: 2px solid #4a4a4a !important;
 }
-
 article.muell-rest header strong,
 article.muell-rest .data {
     color: #2b2b2b !important;
     font-weight: bold;
 }
 
-/* Gelber Sack - Gelber Text */
+/* Gelber Sack */
 article.muell-gelb {
     background-color: #fbfcfc !important;
     border: 2px solid #ffd700 !important;
 }
-
 article.muell-gelb header strong,
 article.muell-gelb .data {
     color: #e6b800 !important;
     font-weight: bold;
 }
 
-/* Biotonne - Brauner Text */
-article.muell-bio {
-    background-color: #fbfcfc !important;
-    border: 2px solid #8b4513 !important;
-}
-
-article.muell-bio header strong,
-article.muell-bio .data {
-    color: #8b4513 !important;
-    font-weight: bold;
-}
-
-/* Altpapier - Roter Text */
+/* Altpapier */
 article.muell-papier {
     background-color: #fbfcfc !important;
     border: 2px solid #dc3545 !important;
 }
-
 article.muell-papier header strong,
 article.muell-papier .data {
     color: #dc3545 !important;
     font-weight: bold;
+}
+
+/* Biotonne (jetzt entfernt) */
+/* article.muell-bio ... */
+
+
+/* --- NEUE UNWETTER-STILE --- */
+
+/* Basis-Stil für Unwetter-Text */
+#unwetter-warnung {
+    font-size: 1.25em;
+    font-weight: normal;
+    min-height: 2.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Aktive Warnung (z.B. Roter Rahmen) */
+article.unwetter-aktiv {
+    background-color: #fbfcfc !important;
+    /* Nutzt dieselbe Farbe wie Altpapier-Warnung */
+    border: 2px solid #dc3545 !important; 
+}
+article.unwetter-aktiv header strong,
+article.unwetter-aktiv .data {
+    color: #dc3545 !important;
+    font-weight: bold;
+}
+
+/* Keine Warnung (z.B. Grauer Rahmen/Text) */
+article.unwetter-inaktiv {
+    background-color: #fbfcfc !important;
+    border: 2px solid #a0a0a0 !important;
+}
+article.unwetter-inaktiv header strong,
+article.unwetter-inaktiv .data {
+    color: #808080 !important; /* Dezentes Grau */
+    font-weight: normal;
 }

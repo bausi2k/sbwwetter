@@ -27,10 +27,18 @@ const topicMap = {
         unit: '',
         widgetId: 'widget-muell-naechste'
     },
-    'gasse/müll/übernächste': {
-        id: 'muell-uebernaechste',
+    // ### HIER IST DIE ÄNDERUNG ###
+    'gasse/unwetter': {
+        id: 'unwetter-warnung', // <span> ID
         unit: '',
-        widgetId: 'widget-muell-uebernaechste'
+        widgetId: 'widget-unwetter', // <article> ID
+        formatter: (payload) => {
+            // Fängt null, undefined oder leere Strings ab
+            if (!payload || payload.trim() === '') {
+                return "keine Unwetterinformationen";
+            }
+            return payload; // Gibt den Warntext zurück
+        }
     }
 };
 
@@ -38,11 +46,9 @@ const topicMap = {
 const statusElement = document.getElementById('status');
 let tempChart;
 
-// --- Helper-Funktion (zum Setzen der CSS-Klasse) ---
+// --- Helper-Funktion für Müll ---
 function setMuellStyle(widgetElement, payload) {
     widgetElement.classList.remove('muell-rest', 'muell-gelb', 'muell-bio', 'muell-papier');
-    
-    // trim() entfernt Leerzeichen am Anfang/Ende, toLowerCase() ignoriert Groß/Kleinschreibung
     const lowerPayload = payload.trim().toLowerCase();
 
     if (lowerPayload.includes('restmüll') || lowerPayload.includes('restmuell')) {
@@ -55,6 +61,23 @@ function setMuellStyle(widgetElement, payload) {
         widgetElement.classList.add('muell-papier');
     }
 }
+
+// ### NEUE HELPER-FUNKTION FÜR UNWETTER ###
+/**
+ * Setzt den Stil der Unwetter-Kachel.
+ * @param {HTMLElement} widgetElement - Das <article>-Element.
+ * @param {string} displayValue - Der formatierte Text (z.B. "keine Unwetterinformationen").
+ */
+function setUnwetterStyle(widgetElement, displayValue) {
+    widgetElement.classList.remove('unwetter-aktiv', 'unwetter-inaktiv');
+    
+    if (displayValue === "keine Unwetterinformationen") {
+        widgetElement.classList.add('unwetter-inaktiv');
+    } else {
+        widgetElement.classList.add('unwetter-aktiv');
+    }
+}
+
 
 // --- Graph initialisieren ---
 function initChart() {
@@ -179,13 +202,22 @@ client.on('message', (topic, payload) => {
             }
         }
 
-        // Logik für Müll
+        // ### HIER IST DIE ÄNDERUNG (Logik aufgeteilt) ###
         if (mapping.widgetId) {
             const widgetElement = document.getElementById(mapping.widgetId);
-            if (widgetElement) {
-                setMuellStyle(widgetElement, message);
-            } else {
-                console.error(`Widget-Element mit ID "${mapping.widgetId}" nicht gefunden!`);
+            if (!widgetElement) {
+                 console.error(`Widget-Element mit ID "${mapping.widgetId}" nicht gefunden!`);
+                 return;
+            }
+
+            // Müll-Logik
+            if (topic.includes('gasse/müll')) {
+                setMuellStyle(widgetElement, message); // Müll braucht den Original-Payload
+            }
+            
+            // Unwetter-Logik
+            if (topic.includes('gasse/unwetter')) {
+                setUnwetterStyle(widgetElement, displayValue); // Unwetter braucht den formatierten Wert
             }
         }
     }
