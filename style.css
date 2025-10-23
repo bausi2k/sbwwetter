@@ -87,11 +87,11 @@ article.muell-bio .data {
     font-weight: bold;
 }
 
-/* Altpapier - Blau */
+/* Altpapier - Rot */
 article.muell-papier {
-    background-color: #1e90ff !important;
+    background-color: #dc3545 !important;
     color: #ffffff !important;
-    border: 2px solid #4169e1 !important;
+    border: 2px solid #c82333 !important;
 }
 
 article.muell-papier header,
