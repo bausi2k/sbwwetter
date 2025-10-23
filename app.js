@@ -38,48 +38,22 @@ const topicMap = {
 const statusElement = document.getElementById('status');
 let tempChart;
 
-// --- Helper-Funktion (zum Setzen der CSS-Klasse) - MIT DEBUG ---
+// --- Helper-Funktion (zum Setzen der CSS-Klasse) ---
 function setMuellStyle(widgetElement, payload) {
-    console.log('========================================');
-    console.log('🗑️ setMuellStyle aufgerufen!');
-    console.log('Widget Element:', widgetElement);
-    console.log('Widget Element ID:', widgetElement ? widgetElement.id : 'NICHT GEFUNDEN');
-    console.log('Payload (original):', `"${payload}"`);
-    console.log('Payload Länge:', payload.length);
-    console.log('Payload Bytes:', Array.from(payload).map(c => c.charCodeAt(0)));
-    
-    // Alle alten Klassen entfernen
     widgetElement.classList.remove('muell-rest', 'muell-gelb', 'muell-bio', 'muell-papier');
-    console.log('Alte Klassen entfernt');
     
+    // trim() entfernt Leerzeichen am Anfang/Ende, toLowerCase() ignoriert Groß/Kleinschreibung
     const lowerPayload = payload.trim().toLowerCase();
-    console.log('Payload (lowercase & trimmed):', `"${lowerPayload}"`);
-    
-    // Teste alle Bedingungen einzeln
-    console.log('Test "restmüll":', lowerPayload.includes('restmüll'));
-    console.log('Test "restmuell":', lowerPayload.includes('restmuell'));
-    console.log('Test "gelber sack":', lowerPayload.includes('gelber sack'));
-    console.log('Test "biotonne":', lowerPayload.includes('biotonne'));
-    console.log('Test "altpapier":', lowerPayload.includes('altpapier'));
 
     if (lowerPayload.includes('restmüll') || lowerPayload.includes('restmuell')) {
-        console.log('✅ MATCH: Restmüll - Füge Klasse "muell-rest" hinzu');
         widgetElement.classList.add('muell-rest');
     } else if (lowerPayload.includes('gelber sack')) {
-        console.log('✅ MATCH: Gelber Sack - Füge Klasse "muell-gelb" hinzu');
         widgetElement.classList.add('muell-gelb');
     } else if (lowerPayload.includes('biotonne')) {
-        console.log('✅ MATCH: Biotonne - Füge Klasse "muell-bio" hinzu');
         widgetElement.classList.add('muell-bio');
     } else if (lowerPayload.includes('altpapier')) {
-        console.log('✅ MATCH: Altpapier - Füge Klasse "muell-papier" hinzu');
         widgetElement.classList.add('muell-papier');
-    } else {
-        console.log('❌ KEIN MATCH gefunden!');
     }
-    
-    console.log('Finale Klassen:', widgetElement.className);
-    console.log('========================================');
 }
 
 // --- Graph initialisieren ---
@@ -122,11 +96,11 @@ function initChart() {
 
 // --- 3. MQTT-Verbindung ---
 const clientUrl = `wss://${HIVE_MQ_HOST}:${HIVE_MQ_PORT}/mqtt`;
-const options = { 
-    clientId: 'mein-web-dashboard-' + Math.random().toString(16).substr(2, 8), 
-    username: HIVE_MQ_USER, 
-    password: HIVE_MQ_PASS, 
-    clean: true 
+const options = {
+    clientId: 'mein-web-dashboard-' + Math.random().toString(16).substr(2, 8),
+    username: HIVE_MQ_USER,
+    password: HIVE_MQ_PASS,
+    clean: true
 };
 console.log('Verbinde mit ' + clientUrl);
 const client = mqtt.connect(clientUrl, options);
@@ -146,15 +120,10 @@ client.on('connect', () => {
 
 client.on('message', (topic, payload) => {
     const message = payload.toString();
-    console.log(`📨 Nachricht empfangen auf Topic '${topic}': "${message}"`);
+    console.log(`Nachricht empfangen auf Topic '${topic}': "${message}"`);
 
     const mapping = topicMap[topic];
-    if (!mapping) {
-        console.log('⚠️ Kein Mapping für dieses Topic gefunden');
-        return;
-    }
-
-    console.log('Mapping gefunden:', mapping);
+    if (!mapping) return;
 
     // ----- SPEZIALFALL 1: History-Daten für den Graphen -----
     if (mapping.id === 'aussen-temp-chart') {
@@ -166,8 +135,8 @@ client.on('message', (topic, payload) => {
             tempChart.data.datasets[0].data = dataPoints;
             tempChart.update();
             console.log('Graph mit 24h-Daten gefüllt.');
-        } catch (e) { 
-            console.error('Fehler beim Parsen der History-JSON:', e); 
+        } catch (e) {
+            console.error('Fehler beim Parsen der History-JSON:', e);
         }
 
     // ----- SPEZIALFALL 2: Live-Temperatur (Text UND Graph) -----
@@ -186,25 +155,20 @@ client.on('message', (topic, payload) => {
 
     // ----- STANDARD-FALL: Alle anderen Widgets -----
     } else {
-        console.log(`📝 Standard-Widget-Verarbeitung für ${mapping.id}`);
         const element = document.getElementById(mapping.id);
         
         if (!element) {
-            console.error(`❌ Element mit ID "${mapping.id}" nicht gefunden!`);
+            console.error(`Element mit ID "${mapping.id}" nicht gefunden!`);
             return;
         }
-        
-        console.log('Element gefunden:', element);
         
         let displayValue = message;
         if (mapping.formatter) {
             displayValue = mapping.formatter(message);
-            console.log('Formatter angewendet:', displayValue);
         }
         
         const unit = mapping.unit || '';
         element.textContent = displayValue + unit;
-        console.log('Text gesetzt:', displayValue + unit);
 
         // Styling für Regen
         if (topic === 'home/regen/status') {
@@ -217,17 +181,12 @@ client.on('message', (topic, payload) => {
 
         // Logik für Müll
         if (mapping.widgetId) {
-            console.log(`🗑️ Müll-Widget erkannt! widgetId: ${mapping.widgetId}`);
             const widgetElement = document.getElementById(mapping.widgetId);
-            
-            if (!widgetElement) {
-                console.error(`❌ Widget-Element mit ID "${mapping.widgetId}" nicht gefunden!`);
-            } else {
-                console.log('✅ Widget-Element gefunden, rufe setMuellStyle auf...');
+            if (widgetElement) {
                 setMuellStyle(widgetElement, message);
+            } else {
+                console.error(`Widget-Element mit ID "${mapping.widgetId}" nicht gefunden!`);
             }
-        } else {
-            console.log('ℹ️ Kein widgetId definiert (kein Müll-Widget)');
         }
     }
 });
@@ -250,6 +209,6 @@ client.on('reconnect', () => {
 });
 
 // --- 5. App starten ---
-console.log('🚀 App wird initialisiert...');
+console.log('App wird initialisiert...');
 initChart();
-console.log('✅ Chart initialisiert');
+console.log('Chart initialisiert');
