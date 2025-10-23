@@ -7,7 +7,7 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
     
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -20,30 +20,8 @@
             <p>Verbindungsstatus: <mark id="status">Verbinde...</mark></p>
         </header>
 
-        <article>
-            <header><strong>Außentemperatur (24h Verlauf)</strong></header>
-            <div id="chart-wrapper">
-                <canvas id="tempChartCanvas"></canvas>
-            </div>
-        </article>
 
-        <div class="grid">
-            
-            <article>
-                <header><strong>Außentemperatur (Live)</strong></header>
-                <span id="aussen-temp" class="data">-- °C</span>
-            </article>
-
-            <article>
-                <header><strong>Luftfeuchtigkeit Außen</strong></header>
-                <span id="aussen-luft" class="data">-- %</span>
-            </article>
-
-            <article>
-                <header><strong>Regnet es?</strong></header>
-                <span id="regen-status" class="data">--</span>
-            </article>
-
+        <div class="grid" id="row-1">
             <article id="widget-muell-naechste">
                 <header><strong>Nächste Müllabholung</strong></header>
                 <span id="muell-naechste" class="data">--</span>
@@ -53,10 +31,35 @@
                 <header><strong>Unwetterwarnung</strong></header>
                 <span id="unwetter-warnung" class="data">--</span>
             </article>
-            
         </div>
 
-    </main> 
+
+        <div class="grid" id="row-2">
+            <article>
+                <header><strong>Außentemperatur (Live)</strong></header>
+                <span id="aussen-temp" class="data">-- °C</span>
+            </article>
+
+            <article>
+                <header><strong>Regnet es?</strong></header>
+                <span id="regen-status" class="data">--</span>
+            </article>
+
+            <article>
+                <header><strong>Luftfeuchtigkeit Außen</strong></header>
+                <span id="aussen-luft" class="data">-- %</span>
+            </article>
+        </div>
+
+
+        <article>
+            <header><strong>Außentemperatur (24h Verlauf)</strong></header>
+            <div id="chart-wrapper">
+                <canvas id="tempChartCanvas"></canvas>
+            </div>
+        </article>
+
+        </main> 
     
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="app.js"></script>

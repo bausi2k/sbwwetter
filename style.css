@@ -1,4 +1,4 @@
-/* style.css (BEREINIGTE VERSION V5) */
+/* style.css (BEREINIGTE VERSION V6) */
 
 /* Überschrift des Dashboards zentrieren */
 header {
@@ -34,6 +34,30 @@ article header {
     height: 350px;
 }
 
+/* --- NEUE LAYOUT-REGELN --- */
+
+/* Sorgt für etwas Abstand zwischen den Zeilen-Blöcken */
+.grid {
+    margin-bottom: 1.5rem;
+}
+
+/* Desktop-Layout (alles über 768px Breite) */
+@media (min-width: 768px) {
+    
+    /* Zeile 1: 2 Spalten */
+    #row-1 {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* Zeile 2: 3 Spalten */
+    #row-2 {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+
+/* --- MÜLL & UNWETTER STILE --- */
+
 /* Basis-Stil für Müll-Widgets (kleinere Schrift) */
 #muell-naechste {
     font-size: 1.25em;
@@ -43,8 +67,6 @@ article header {
     align-items: center;
     justify-content: center;
 }
-
-/* --- MÜLL FARBKLASSEN (DEIN DESIGN) --- */
 
 /* Restmüll */
 article.muell-rest {
@@ -79,11 +101,16 @@ article.muell-papier .data {
     font-weight: bold;
 }
 
-/* Biotonne (jetzt entfernt) */
-/* article.muell-bio ... */
-
-
-/* --- NEUE UNWETTER-STILE --- */
+/* Biotonne (wird derzeit nicht verwendet) */
+article.muell-bio {
+    background-color: #fbfcfc !important;
+    border: 2px solid #8b4513 !important;
+}
+article.muell-bio header strong,
+article.muell-bio .data {
+    color: #8b4513 !important;
+    font-weight: bold;
+}
 
 /* Basis-Stil für Unwetter-Text */
 #unwetter-warnung {
@@ -95,10 +122,9 @@ article.muell-papier .data {
     justify-content: center;
 }
 
-/* Aktive Warnung (z.B. Roter Rahmen) */
+/* Aktive Warnung (Roter Rahmen) */
 article.unwetter-aktiv {
     background-color: #fbfcfc !important;
-    /* Nutzt dieselbe Farbe wie Altpapier-Warnung */
     border: 2px solid #dc3545 !important; 
 }
 article.unwetter-aktiv header strong,
@@ -107,13 +133,13 @@ article.unwetter-aktiv .data {
     font-weight: bold;
 }
 
-/* Keine Warnung (z.B. Grauer Rahmen/Text) */
+/* Keine Warnung (Grauer Rahmen/Text) */
 article.unwetter-inaktiv {
     background-color: #fbfcfc !important;
     border: 2px solid #a0a0a0 !important;
 }
 article.unwetter-inaktiv header strong,
 article.unwetter-inaktiv .data {
-    color: #808080 !important; /* Dezentes Grau */
+    color: #808080 !important;
     font-weight: normal;
 }
