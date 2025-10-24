@@ -4,7 +4,7 @@ const HIVE_MQ_PORT = 8884;
 const HIVE_MQ_USER = 'sbwwetter';
 const HIVE_MQ_PASS = 'pbd7chu6kba!zrd2GTG';
 
-// --- Flexible Topic-Zuordnung --- (SAUBERE VERSION)
+// --- Flexible Topic-Zuordnung --- (MIT REGEN-STATS)
 const topicMap = {
     'home/temp/auszen': { id: 'aussen-temp', unit: ' °C' },
     'home/luftfeuchte/aktuell': { id: 'aussen-luft', unit: ' %' },
@@ -29,7 +29,13 @@ const topicMap = {
     },
     'home/regen/jahresstat': {
         id: 'regen-chart-jahresstat' // Spezialbehandlung
-    }
+    },
+    // ### HIER SIND DIE FEHLENDEN REGEN-STATISTIK TOPICS ###
+    'home/regen/stat7d': { id: 'regen-7d', unit: ' mm' },
+    'home/regen/stat14d': { id: 'regen-14d', unit: ' mm' },
+    'home/regen/stat1m': { id: 'regen-1m', unit: ' mm' },
+    'home/regen/stat3m': { id: 'regen-3m', unit: ' mm' },
+    'home/regen/stat6m': { id: 'regen-6m', unit: ' mm' }
 };
 
 // --- 2. Globale Variablen ---
@@ -179,7 +185,6 @@ try {
                     tempChart.data.labels = labels;
                     tempChart.data.datasets[0].data = dataPoints;
                     tempChart.update();
-                    // console.log('Temperatur-Graph (24h) gefüllt.'); // Kann man wieder aktivieren bei Bedarf
                 } else {
                     console.warn('Temperatur-Chart war bei Eintreffen der Nachricht noch nicht bereit.');
                 }
@@ -198,7 +203,6 @@ try {
                         regenChart.data.datasets[0].data = chartData.data;
                         regenChart.data.datasets[0].label = chartData.series[0] || 'Regenmenge (mm)';
                         regenChart.update();
-                        // console.log('Regen-Graph (Jahr) gefüllt.'); // Kann man wieder aktivieren bei Bedarf
                     } else {
                          console.warn('Regen-Chart war bei Eintreffen der Nachricht noch nicht bereit.');
                     }
@@ -222,7 +226,7 @@ try {
                 }
             }
 
-        // ----- STANDARD-FALL: Alle anderen Widgets -----
+        // ----- STANDARD-FALL: Alle anderen Widgets (INKL. REGEN-STATS) -----
         } else {
             const element = document.getElementById(mapping.id);
             if (!element) { console.error(`Element mit ID "${mapping.id}" nicht gefunden!`); return; }
