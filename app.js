@@ -69,7 +69,6 @@ function initRegenChart() {
             datasets: [{
                 label: 'Regenmenge (mm)',
                 data: [],
-// ### HIER IST DIE BLAUE FARBE ###
                 backgroundColor: 'var(--pico-color-blue-500)',
                 borderColor: 'var(--pico-color-blue-600)',
                 borderWidth: 1
@@ -171,8 +170,7 @@ client.on('message', (topic, payload) => {
             const historyData = JSON.parse(message);
             const labels = historyData.map(d => new Date(d._time).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }));
             const dataPoints = historyData.map(d => d._value.toFixed(1));
-            
-            // Fange den (jetzt behobenen) Race-Condition-Fehler trotzdem ab
+
             if (tempChart) {
                 tempChart.data.labels = labels;
                 tempChart.data.datasets[0].data = dataPoints;
@@ -191,7 +189,6 @@ client.on('message', (topic, payload) => {
             const data = JSON.parse(message);
             if (data && data[0]) {
                 const chartData = data[0];
-                // Fange den (jetzt behobenen) Race-Condition-Fehler trotzdem ab
                 if (regenChart) {
                     regenChart.data.labels = chartData.labels;
                     regenChart.data.datasets[0].data = chartData.data;
@@ -210,8 +207,7 @@ client.on('message', (topic, payload) => {
     } else if (topic === 'home/temp/auszen') {
         const element = document.getElementById(mapping.id);
         if (element) element.textContent = `${parseFloat(message).toFixed(1)} ${mapping.unit}`;
-        
-        // Füge Live-Wert zum Graphen hinzu (nur wenn Chart bereit ist)
+
         if (tempChart) {
             const lastDataPoint = tempChart.data.datasets[0].data.slice(-1)[0];
             if (lastDataPoint != parseFloat(message).toFixed(1)) {
@@ -226,15 +222,15 @@ client.on('message', (topic, payload) => {
     } else {
         const element = document.getElementById(mapping.id);
         if (!element) { console.error(`Element mit ID "${mapping.id}" nicht gefunden!`); return; }
-        
+
         let displayValue = message;
         if (mapping.formatter) { displayValue = mapping.formatter(message); }
-        
+
         const unit = mapping.unit || '';
         element.textContent = displayValue + unit;
 
         if (topic === 'home/regen/status') {
-             if (displayValue.includes('Ja')) { element.style.color = 'var(--pico-color-blue-500)'; } 
+             if (displayValue.includes('Ja')) { element.style.color = 'var(--pico-color-blue-500)'; }
              else { element.style.color = 'var(--pico-color-orange-500)'; }
         }
 
