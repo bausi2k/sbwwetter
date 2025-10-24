@@ -1,4 +1,4 @@
-/* style.css (BEREINIGTE VERSION V12) */
+/* style.css (BEREINIGTE VERSION V13) */
 
 /* Überschrift des Dashboards zentrieren */
 header {
@@ -48,9 +48,13 @@ article header {
 
 /* Desktop-Layout (alles über 768px Breite) */
 @media (min-width: 768px) {
-    /* Zeile 1 (Müll, Prognose, Unwetter) & Zeile 2 (Wetter-Live) haben 3 Spalten */
-    #row-1, #row-2 {
+    /* Zeile 1 hat 3 Spalten */
+    #row-1 {
         grid-template-columns: 1fr 1fr 1fr;
+    }
+    /* Zeile 2 hat jetzt 4 Spalten */
+    #row-2 {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 }
 
@@ -79,7 +83,7 @@ article header {
     color: var(--pico-primary);
 }
 
-/* --- MÜLL & UNWETTER & PROGNOSE STILE --- */
+/* --- MÜLL & UNWETTER & PROGNOSE & WIND STILE --- */
 
 /* Basis-Stil für Müll-Widgets */
 #muell-naechste {
@@ -201,15 +205,20 @@ article.unwetter-inaktiv .data {
     justify-content: center;
     padding: 0 0.5rem; /* Etwas Platz links/rechts, falls Text lang wird */
 }
-/* Optional: Styling für das Widget selbst hinzufügen */
+/* Styling für das Prognose Widget selbst */
 article#widget-prognose {
-    /* Hier könnte man z.B. einen neutralen Rahmen hinzufügen */
      background-color: #fbfcfc;
      border: 2px solid var(--pico-muted-border-color);
 }
 article#widget-prognose header strong {
     color: var(--pico-muted-color); /* Header neutral färben */
 }
+
+/* Stil für Wind (aktuell nur Standard .data) */
+#wind-now {
+    /* Hier könnten Anpassungen hin, falls nötig */
+}
+
 
 /* --- FOOTER-STIL --- */
 footer {

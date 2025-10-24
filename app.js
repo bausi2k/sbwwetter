@@ -4,7 +4,7 @@ const HIVE_MQ_PORT = 8884;
 const HIVE_MQ_USER = 'sbwwetter';
 const HIVE_MQ_PASS = 'pbd7chu6kba!zrd2GTG';
 
-// --- Flexible Topic-Zuordnung --- (SAUBERE VERSION v12)
+// --- Flexible Topic-Zuordnung ---
 const topicMap = {
     'home/temp/auszen': { id: 'aussen-temp', unit: ' °C' },
     'home/luftfeuchte/aktuell': { id: 'aussen-luft', unit: ' %' },
@@ -36,9 +36,13 @@ const topicMap = {
     'home/regen/stat3m': { id: 'regen-3m', unit: ' mm' },
     'home/regen/stat6m': { id: 'regen-6m', unit: ' mm' },
     'home/wetter/prognose/morgen': {
-        id: 'wetter-prognose', // ID des <span> Elements
-        unit: '',             // Kein Suffix
-        widgetId: 'widget-prognose' // ID des <article> Elements für evtl. Styling
+        id: 'wetter-prognose',
+        unit: '',
+        widgetId: 'widget-prognose'
+    },
+    'home/wind/now': {
+        id: 'wind-now', // ID des <span> Elements
+        unit: ' km/h'   // Einheit (ggf. anpassen)
     }
 };
 
@@ -236,6 +240,12 @@ try {
             if (!element) { console.error(`Element mit ID "${mapping.id}" nicht gefunden!`); return; }
 
             let displayValue = message;
+            // Optional: Runden für Wind
+            // if (topic === 'home/wind/now') {
+            //     const speed = parseFloat(message);
+            //     displayValue = isNaN(speed) ? message : speed.toFixed(1);
+            // }
+
             if (mapping.formatter) { displayValue = mapping.formatter(message); }
 
             const unit = mapping.unit || '';
@@ -251,7 +261,7 @@ try {
                 if (!widgetElement) { console.error(`Widget-Element mit ID "${mapping.widgetId}" nicht gefunden!`); return; }
                 if (topic.includes('gasse/müll')) { setMuellStyle(widgetElement, message); }
                 if (topic.includes('gasse/unwetter')) { setUnwetterStyle(widgetElement, message); }
-                // Hier könnte man Styling für die Prognose hinzufügen, z.B.
+                // Styling für Prognose könnte hier hin
                 // if (topic.includes('wetter/prognose')) { setPrognoseStyle(widgetElement, message); }
             }
         }
