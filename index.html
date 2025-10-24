@@ -7,7 +7,7 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
     
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=11">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -47,7 +47,32 @@
                 <summary role="button">Regenstatistik</summary>
                 
                 <article>
-                    <header><strong>Jahresregenmenge (mm)</strong></header>
+                    <header><strong>Regenmengen (Summe)</strong></header>
+                    
+                    <div class="stats-grid">
+                        <div>
+                            <small>Letzte 7 Tage:</small>
+                            <strong id="regen-7d">-- mm</strong>
+                        </div>
+                        <div>
+                            <small>Letzte 14 Tage:</small>
+                            <strong id="regen-14d">-- mm</strong>
+                        </div>
+                         <div>
+                            <small>Letzter Monat:</small>
+                            <strong id="regen-1m">-- mm</strong>
+                        </div>
+                         <div>
+                            <small>Letzte 3 Monate:</small>
+                            <strong id="regen-3m">-- mm</strong>
+                        </div>
+                         <div>
+                            <small>Letzte 6 Monate:</small>
+                            <strong id="regen-6m">-- mm</strong>
+                        </div>
+                    </div>
+                    
+                    <hr> <header><strong>Jahresregenmenge (mm)</strong></header>
                     <div id="chart-wrapper-regen">
                         <canvas id="regenChartCanvas"></canvas>
                     </div>
