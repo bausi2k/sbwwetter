@@ -1,17 +1,56 @@
-/* style.css (BEREINIGTE VERSION V7) */
+/* style.css (BEREINIGTE VERSION V10) */
 
-/* ... (Alle Regeln für header, .data, #status, article header, #chart-wrapper bleiben gleich) ... */
-header { text-align: center; margin-bottom: 2rem; }
-.data { font-size: 2.5em; font-weight: bold; color: var(--pico-primary); display: block; margin-top: 1rem; text-align: center; }
-#status { padding: 0.25rem 0.5rem; border-radius: var(--pico-border-radius); }
-article header { text-align: center; font-size: 1.1em; }
-#chart-wrapper { position: relative; height: 350px; }
+/* Überschrift des Dashboards zentrieren */
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
 
-/* --- NEUE LAYOUT-REGELN --- */
-.grid { margin-bottom: 1.5rem; }
+/* Die großen Daten-Anzeigen (Live-Werte) */
+.data {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: var(--pico-primary);
+    display: block;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* Verbindungsstatus-Badge hervorheben */
+#status {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--pico-border-radius);
+}
+
+/* Widget-Titel zentrieren */
+article header {
+    text-align: center;
+    font-size: 1.1em;
+}
+
+/* Definiert einen festen Rahmen für den Graphen */
+#chart-wrapper {
+    position: relative;
+    height: 350px;
+}
+
+/* Eigener Wrapper für Regen-Chart */
+#chart-wrapper-regen {
+    position: relative;
+    height: 350px;
+}
+
+/* --- LAYOUT-REGELN --- */
+.grid {
+    margin-bottom: 1.5rem;
+}
 @media (min-width: 768px) {
-    #row-1 { grid-template-columns: 1fr 1fr; }
-    #row-2 { grid-template-columns: 1fr 1fr 1fr; }
+    #row-1 {
+        grid-template-columns: 1fr 1fr;
+    }
+    #row-2 {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 }
 
 /* --- MÜLL & UNWETTER STILE --- */
@@ -26,18 +65,15 @@ article header { text-align: center; font-size: 1.1em; }
     justify-content: center;
 }
 
-/* ... (Alle Müll-Farbklassen .muell-rest, .muell-gelb, .muell-papier bleiben gleich) ... */
+/* ... (Alle deine Müll-Farbklassen .muell-rest, .muell-gelb, etc. bleiben hier) ... */
 article.muell-rest { background-color: #fbfcfc !important; border: 2px solid #4a4a4a !important; }
 article.muell-rest header strong, article.muell-rest .data { color: #2b2b2b !important; font-weight: bold; }
 article.muell-gelb { background-color: #fbfcfc !important; border: 2px solid #ffd700 !important; }
 article.muell-gelb header strong, article.muell-gelb .data { color: #e6b800 !important; font-weight: bold; }
-article.muell-papier { background-color: #fbfcfc !important; border: 2px solid #dc3545 !important; }
-article.muell-papier header strong, article.muell-papier .data { color: #dc3545 !important; font-weight: bold; }
 article.muell-bio { background-color: #fbfcfc !important; border: 2px solid #8b4513 !important; }
 article.muell-bio header strong, article.muell-bio .data { color: #8b4513 !important; font-weight: bold; }
-
-
-/* --- AKTUALISIERTE UNWETTER-STILE --- */
+article.muell-papier { background-color: #fbfcfc !important; border: 2px solid #dc3545 !important; }
+article.muell-papier header strong, article.muell-papier .data { color: #dc3545 !important; font-weight: bold; }
 
 /* Basis-Stil für Unwetter-Text */
 #unwetter-warnung {
@@ -49,88 +85,20 @@ article.muell-bio header strong, article.muell-bio .data { color: #8b4513 !impor
     justify-content: center;
 }
 
-/* Warnung ORANGE */
-article.unwetter-aktiv-orange {
-    background-color: #fbfcfc !important;
-    border: 2px solid #fd7e14 !important; /* Orange */
-}
-article.unwetter-aktiv-orange header strong,
-article.unwetter-aktiv-orange .data {
-    color: #fd7e14 !important;
-    font-weight: bold;
-}
-
-/* Warnung ROT (gleiche Farbe wie Altpapier) */
-article.unwetter-aktiv-rot {
-    background-color: #fbfcfc !important;
-    border: 2px solid #dc3545 !important; /* Rot */
-}
-article.unwetter-aktiv-rot header strong,
-article.unwetter-aktiv-rot .data {
-    color: #dc3545 !important;
-    font-weight: bold;
-}
-
-/* Warnung VIOLETT */
-article.unwetter-aktiv-violett {
-    background-color: #fbfcfc !important;
-    border: 2px solid #6f42c1 !important; /* Violett */
-}
-article.unwetter-aktiv-violett header strong,
-article.unwetter-aktiv-violett .data {
-    color: #6f42c1 !important;
-    font-weight: bold;
-}
-
-/* Keine Warnung (Grauer Rahmen/Text) */
-article.unwetter-inaktiv {
-    background-color: #fbfcfc !important;
-    border: 2px solid #a0a0a0 !important;
-}
-article.unwetter-inaktiv header strong,
-article.unwetter-inaktiv .data {
-    color: #808080 !important;
-    font-weight: normal;
-}
-
-/* Fügt etwas Abstand zwischen Header und den Tab-Buttons hinzu */
-[data-tabs] {
-    margin-top: 1.5rem;
-}
-
-/* Stellt sicher, dass der Inhalt IN den Tabs (unsere <article>s)
-   normalen Abstand hat und nicht am Rand klebt. */
-[data-tabs] details[open] {
-    padding-top: var(--pico-spacing);
-}
-
-/* style.css (BEREINIGTE VERSION V9) */
-
-/* ... (Alle alten Regeln von header bis #chart-wrapper bleiben gleich) ... */
-header { text-align: center; margin-bottom: 2rem; }
-.data { font-size: 2.5em; font-weight: bold; color: var(--pico-primary); display: block; margin-top: 1rem; text-align: center; }
-#status { padding: 0.25rem 0.5rem; border-radius: var(--pico-border-radius); }
-article header { text-align: center; font-size: 1.1em; }
-#chart-wrapper { position: relative; height: 350px; }
+/* ... (Alle deine Unwetter-Farbklassen .unwetter-aktiv-orange, etc. bleiben hier) ... */
+article.unwetter-aktiv-orange { background-color: #fbfcfc !important; border: 2px solid #fd7e14 !important; }
+article.unwetter-aktiv-orange header strong, article.unwetter-aktiv-orange .data { color: #fd7e14 !important; font-weight: bold; }
+article.unwetter-aktiv-rot { background-color: #fbfcfc !important; border: 2px solid #dc3545 !important; }
+article.unwetter-aktiv-rot header strong, article.unwetter-aktiv-rot .data { color: #dc3545 !important; font-weight: bold; }
+article.unwetter-aktiv-violett { background-color: #fbfcfc !important; border: 2px solid #6f42c1 !important; }
+article.unwetter-aktiv-violett header strong, article.unwetter-aktiv-violett .data { color: #6f42c1 !important; font-weight: bold; }
+article.unwetter-inaktiv { background-color: #fbfcfc !important; border: 2px solid #a0a0a0 !important; }
+article.unwetter-inaktiv header strong, article.unwetter-inaktiv .data { color: #808080 !important; font-weight: normal; }
 
 
-/* ### NEUE REGEL FÜR REGEN-CHART ### */
-#chart-wrapper-regen {
-    position: relative;
-    height: 350px;
+/* --- NEUER FOOTER-STIL --- */
+footer {
+    text-align: center;
+    margin-top: 2rem;
+    opacity: 0.8; /* Macht es etwas dezenter */
 }
-
-
-/* --- LAYOUT-REGELN --- */
-/* ... (Alle Layout-Regeln für .grid, #row-1, #row-2 bleiben gleich) ... */
-.grid { margin-bottom: 1.5rem; }
-@media (min-width: 768px) {
-    #row-1 { grid-template-columns: 1fr 1fr; }
-    #row-2 { grid-template-columns: 1fr 1fr 1fr; }
-}
-
-/* --- STILE FÜR MÜLL & UNWETTER --- */
-/* ... (Alle Müll- und Unwetter-Stile bleiben gleich) ... */
-#muell-naechste { font-size: 1.25em; font-weight: normal; min-height: 2.5em; display: flex; align-items: center; justify-content: center; }
-article.muell-rest { background-color: #fbfcfc !important; border: 2px solid #4a4a4a !important; }
-/* ... (usw. für alle Müll- und Unwetter-Farbklassen) ... */

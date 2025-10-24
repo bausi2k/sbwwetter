@@ -69,6 +69,7 @@ function initRegenChart() {
             datasets: [{
                 label: 'Regenmenge (mm)',
                 data: [],
+// ### HIER IST DIE BLAUE FARBE ###
                 backgroundColor: 'var(--pico-color-blue-500)',
                 borderColor: 'var(--pico-color-blue-600)',
                 borderWidth: 1
