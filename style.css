@@ -1,25 +1,64 @@
-/* style.css (BEREINIGTE VERSION V11) */
+/* style.css (BEREINIGTE VERSION V12) */
 
-/* ... (Alle alten Regeln von header bis #chart-wrapper-regen bleiben gleich) ... */
-header { text-align: center; margin-bottom: 2rem; }
-.data { font-size: 2.5em; font-weight: bold; color: var(--pico-primary); display: block; margin-top: 1rem; text-align: center; }
-#status { padding: 0.25rem 0.5rem; border-radius: var(--pico-border-radius); }
-article header { text-align: center; font-size: 1.1em; }
-#chart-wrapper { position: relative; height: 350px; }
-#chart-wrapper-regen { position: relative; height: 350px; }
-
-/* --- LAYOUT-REGELN --- */
-.grid { margin-bottom: 1.5rem; }
-@media (min-width: 768px) {
-    #row-1 { grid-template-columns: 1fr 1fr; }
-    #row-2 { grid-template-columns: 1fr 1fr 1fr; }
+/* Überschrift des Dashboards zentrieren */
+header {
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
-/* --- NEUE STILE FÜR REGEN-STATISTIKEN --- */
+/* Die großen Daten-Anzeigen (Live-Werte) */
+.data {
+    font-size: 2.5em; /* Standard-Größe für Zahlen */
+    font-weight: bold;
+    color: var(--pico-primary);
+    display: block;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* Verbindungsstatus-Badge hervorheben */
+#status {
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--pico-border-radius);
+}
+
+/* Widget-Titel zentrieren */
+article header {
+    text-align: center;
+    font-size: 1.1em;
+}
+
+/* Definiert einen festen Rahmen für den Temperatur-Graphen */
+#chart-wrapper {
+    position: relative;
+    height: 350px;
+}
+
+/* Definiert einen festen Rahmen für den Regen-Graphen */
+#chart-wrapper-regen {
+    position: relative;
+    height: 350px;
+}
+
+/* --- LAYOUT-REGELN --- */
+/* Allgemeiner Abstand zwischen Grid-Zeilen */
+.grid {
+    margin-bottom: 1.5rem;
+}
+
+/* Desktop-Layout (alles über 768px Breite) */
+@media (min-width: 768px) {
+    /* Zeile 1 (Müll, Prognose, Unwetter) & Zeile 2 (Wetter-Live) haben 3 Spalten */
+    #row-1, #row-2 {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+/* --- REGEN-STATISTIKEN --- */
 .stats-grid {
     display: grid;
     /* Auf großen Schirmen 5 Spalten, auf kleinen 2 */
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem; /* Abstand zwischen den Blöcken */
     text-align: center;
     margin-bottom: 1.5rem; /* Abstand zur Trennlinie */
@@ -40,14 +79,141 @@ article header { text-align: center; font-size: 1.1em; }
     color: var(--pico-primary);
 }
 
-/* --- MÜLL & UNWETTER STILE --- */
-/* ... (Alle Müll- und Unwetter-Stile bleiben gleich) ... */
-#muell-naechste { font-size: 1.25em; font-weight: normal; min-height: 2.5em; display: flex; align-items: center; justify-content: center; }
-article.muell-rest { /* ... */ } 
-/* ... (usw.) ... */
-#unwetter-warnung { font-size: 1.25em; font-weight: normal; min-height: 2.5em; display: flex; align-items: center; justify-content: center; }
-article.unwetter-aktiv-orange { /* ... */ }
-/* ... (usw.) ... */
+/* --- MÜLL & UNWETTER & PROGNOSE STILE --- */
+
+/* Basis-Stil für Müll-Widgets */
+#muell-naechste {
+    font-size: 1.25em;
+    font-weight: normal;
+    min-height: 2.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Restmüll */
+article.muell-rest {
+    background-color: #fbfcfc !important;
+    border: 2px solid #4a4a4a !important;
+}
+article.muell-rest header strong,
+article.muell-rest .data {
+    color: #2b2b2b !important;
+    font-weight: bold;
+}
+
+/* Gelber Sack */
+article.muell-gelb {
+    background-color: #fbfcfc !important;
+    border: 2px solid #ffd700 !important;
+}
+article.muell-gelb header strong,
+article.muell-gelb .data {
+    color: #e6b800 !important;
+    font-weight: bold;
+}
+
+/* Biotonne */
+article.muell-bio {
+    background-color: #fbfcfc !important;
+    border: 2px solid #8b4513 !important;
+}
+article.muell-bio header strong,
+article.muell-bio .data {
+    color: #8b4513 !important;
+    font-weight: bold;
+}
+
+/* Altpapier */
+article.muell-papier {
+    background-color: #fbfcfc !important;
+    border: 2px solid #dc3545 !important;
+}
+article.muell-papier header strong,
+article.muell-papier .data {
+    color: #dc3545 !important;
+    font-weight: bold;
+}
+
+/* Basis-Stil für Unwetter-Text */
+#unwetter-warnung {
+    font-size: 1.25em;
+    font-weight: normal;
+    min-height: 2.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Warnung ORANGE */
+article.unwetter-aktiv-orange {
+    background-color: #fbfcfc !important;
+    border: 2px solid #fd7e14 !important; /* Orange */
+}
+article.unwetter-aktiv-orange header strong,
+article.unwetter-aktiv-orange .data {
+    color: #fd7e14 !important;
+    font-weight: bold;
+}
+
+/* Warnung ROT */
+article.unwetter-aktiv-rot {
+    background-color: #fbfcfc !important;
+    border: 2px solid #dc3545 !important; /* Rot */
+}
+article.unwetter-aktiv-rot header strong,
+article.unwetter-aktiv-rot .data {
+    color: #dc3545 !important;
+    font-weight: bold;
+}
+
+/* Warnung VIOLETT */
+article.unwetter-aktiv-violett {
+    background-color: #fbfcfc !important;
+    border: 2px solid #6f42c1 !important; /* Violett */
+}
+article.unwetter-aktiv-violett header strong,
+article.unwetter-aktiv-violett .data {
+    color: #6f42c1 !important;
+    font-weight: bold;
+}
+
+/* Keine Warnung (Grauer Rahmen/Text) */
+article.unwetter-inaktiv {
+    background-color: #fbfcfc !important;
+    border: 2px solid #a0a0a0 !important;
+}
+article.unwetter-inaktiv header strong,
+article.unwetter-inaktiv .data {
+    color: #808080 !important;
+    font-weight: normal;
+}
+
+
+/* Basis-Stil für Prognose */
+#wetter-prognose {
+    font-size: 1.25em; /* Kleinere Schrift für Text */
+    font-weight: normal;
+    color: var(--pico-secondary); /* Neutrale Farbe */
+    min-height: 2.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.5rem; /* Etwas Platz links/rechts, falls Text lang wird */
+}
+/* Optional: Styling für das Widget selbst hinzufügen */
+article#widget-prognose {
+    /* Hier könnte man z.B. einen neutralen Rahmen hinzufügen */
+     background-color: #fbfcfc;
+     border: 2px solid var(--pico-muted-border-color);
+}
+article#widget-prognose header strong {
+    color: var(--pico-muted-color); /* Header neutral färben */
+}
 
 /* --- FOOTER-STIL --- */
-footer { text-align: center; margin-top: 2rem; opacity: 0.8; }
+footer {
+    text-align: center;
+    margin-top: 2rem;
+    opacity: 0.8; /* Macht es etwas dezenter */
+}
