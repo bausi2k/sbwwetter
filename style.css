@@ -92,3 +92,45 @@ article.unwetter-inaktiv .data {
     color: #808080 !important;
     font-weight: normal;
 }
+
+/* Fügt etwas Abstand zwischen Header und den Tab-Buttons hinzu */
+[data-tabs] {
+    margin-top: 1.5rem;
+}
+
+/* Stellt sicher, dass der Inhalt IN den Tabs (unsere <article>s)
+   normalen Abstand hat und nicht am Rand klebt. */
+[data-tabs] details[open] {
+    padding-top: var(--pico-spacing);
+}
+
+/* style.css (BEREINIGTE VERSION V9) */
+
+/* ... (Alle alten Regeln von header bis #chart-wrapper bleiben gleich) ... */
+header { text-align: center; margin-bottom: 2rem; }
+.data { font-size: 2.5em; font-weight: bold; color: var(--pico-primary); display: block; margin-top: 1rem; text-align: center; }
+#status { padding: 0.25rem 0.5rem; border-radius: var(--pico-border-radius); }
+article header { text-align: center; font-size: 1.1em; }
+#chart-wrapper { position: relative; height: 350px; }
+
+
+/* ### NEUE REGEL FÜR REGEN-CHART ### */
+#chart-wrapper-regen {
+    position: relative;
+    height: 350px;
+}
+
+
+/* --- LAYOUT-REGELN --- */
+/* ... (Alle Layout-Regeln für .grid, #row-1, #row-2 bleiben gleich) ... */
+.grid { margin-bottom: 1.5rem; }
+@media (min-width: 768px) {
+    #row-1 { grid-template-columns: 1fr 1fr; }
+    #row-2 { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+/* --- STILE FÜR MÜLL & UNWETTER --- */
+/* ... (Alle Müll- und Unwetter-Stile bleiben gleich) ... */
+#muell-naechste { font-size: 1.25em; font-weight: normal; min-height: 2.5em; display: flex; align-items: center; justify-content: center; }
+article.muell-rest { background-color: #fbfcfc !important; border: 2px solid #4a4a4a !important; }
+/* ... (usw. für alle Müll- und Unwetter-Farbklassen) ... */

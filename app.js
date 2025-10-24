@@ -6,21 +6,15 @@ const HIVE_MQ_PASS = 'pbd7chu6kba!zrd2GTG';
 
 // --- Flexible Topic-Zuordnung ---
 const topicMap = {
-    'home/temp/auszen': {
-        id: 'aussen-temp',
-        unit: ' °C'
-    },
-    'home/luftfeuchte/aktuell': {
-        id: 'aussen-luft',
-        unit: ' %'
-    },
+    'home/temp/auszen': { id: 'aussen-temp', unit: ' °C' },
+    'home/luftfeuchte/aktuell': { id: 'aussen-luft', unit: ' %' },
     'home/regen/status': {
         id: 'regen-status',
         unit: '',
         formatter: (payload) => (payload === '1' ? 'Ja 🌧️' : 'Nein ☀️')
     },
     'haus/historie/aussentemperatur_24h': {
-        id: 'aussen-temp-chart'
+        id: 'aussen-temp-chart' // Spezialbehandlung
     },
     'gasse/müll/nächste': {
         id: 'muell-naechste',
@@ -28,101 +22,105 @@ const topicMap = {
         widgetId: 'widget-muell-naechste'
     },
     'gasse/unwetter': {
-        id: 'unwetter-warnung', // <span> ID
+        id: 'unwetter-warnung',
         unit: '',
-        widgetId: 'widget-unwetter', // <article> ID
-        formatter: (payload) => {
-            // Fängt null, undefined oder leere Strings ab
-            if (!payload || payload.trim() === '') {
-                return "keine Unwetterinformationen";
-            }
-            return payload; // Gibt den Warntext zurück
-        }
+        widgetId: 'widget-unwetter',
+        formatter: (payload) => (!payload || payload.trim() === '') ? "keine Unwetterinformationen" : payload
+    },
+    // ### NEUES TOPIC ###
+    'home/regen/jahresstat': {
+        id: 'regen-chart-jahresstat' // Spezialbehandlung
     }
 };
 
 // --- 2. Globale Variablen ---
 const statusElement = document.getElementById('status');
 let tempChart;
+let regenChart; // ### NEUE GLOBALE VARIABLE ###
 
 // --- Helper-Funktion für Müll ---
 function setMuellStyle(widgetElement, payload) {
+    // ... (Code unverändert)
     widgetElement.classList.remove('muell-rest', 'muell-gelb', 'muell-bio', 'muell-papier');
     const lowerPayload = payload.trim().toLowerCase();
-
-    if (lowerPayload.includes('restmüll') || lowerPayload.includes('restmuell')) {
-        widgetElement.classList.add('muell-rest');
-    } else if (lowerPayload.includes('gelber sack')) {
-        widgetElement.classList.add('muell-gelb');
-    } else if (lowerPayload.includes('biotonne')) {
-        widgetElement.classList.add('muell-bio');
-    } else if (lowerPayload.includes('altpapier')) {
-        widgetElement.classList.add('muell-papier');
-    }
+    if (lowerPayload.includes('restmüll') || lowerPayload.includes('restmuell')) { widgetElement.classList.add('muell-rest'); }
+    else if (lowerPayload.includes('gelber sack')) { widgetElement.classList.add('muell-gelb'); }
+    else if (lowerPayload.includes('biotonne')) { widgetElement.classList.add('muell-bio'); }
+    else if (lowerPayload.includes('altpapier')) { widgetElement.classList.add('muell-papier'); }
 }
 
-// ### AKTUALISIERTE HELPER-FUNKTION FÜR UNWETTER ###
-/**
- * Setzt den Stil der Unwetter-Kachel basierend auf dem Payload.
- * @param {HTMLElement} widgetElement - Das <article>-Element.
- * @param {string} payload - Der *originale* MQTT-Payload-Text.
- */
+// --- Helper-Funktion für Unwetter ---
 function setUnwetterStyle(widgetElement, payload) {
-    // Zuerst alle alten Klassen entfernen
+    // ... (Code unverändert)
     widgetElement.classList.remove('unwetter-aktiv-orange', 'unwetter-aktiv-rot', 'unwetter-aktiv-violett', 'unwetter-inaktiv');
-    
     const lowerPayload = payload.trim().toLowerCase();
-
-    // Prüfe auf die neuen Farbcodes
-    if (lowerPayload.includes('orange')) {
-        widgetElement.classList.add('unwetter-aktiv-orange');
-    } else if (lowerPayload.includes('rot')) {
-        widgetElement.classList.add('unwetter-aktiv-rot');
-    } else if (lowerPayload.includes('violett')) {
-        widgetElement.classList.add('unwetter-aktiv-violett');
-    } else {
-        // Wenn kein Farbcode gefunden wurde, ist es inaktiv
-        widgetElement.classList.add('unwetter-inaktiv');
-    }
+    if (lowerPayload.includes('orange')) { widgetElement.classList.add('unwetter-aktiv-orange'); }
+    else if (lowerPayload.includes('rot')) { widgetElement.classList.add('unwetter-aktiv-rot'); }
+    else if (lowerPayload.includes('violett')) { widgetElement.classList.add('unwetter-aktiv-violett'); }
+    else { widgetElement.classList.add('unwetter-inaktiv'); }
 }
 
 
-// --- Graph initialisieren ---
-function initChart() {
-    // ... (CODE UNVERÄNDERT) ...
-    const ctx = document.getElementById('tempChartCanvas').getContext('2d');
-    if (window.myLineChart) window.myLineChart.destroy();
-    window.myLineChart = new Chart(ctx, {
-        type: 'line',
+// ### NEUE FUNKTION: Graph für Regen (Bar-Chart) ###
+function initRegenChart() {
+    // Prüft, ob das Element auf der Seite existiert (falls du den Tab mal entfernst)
+    const canvasElement = document.getElementById('regenChartCanvas');
+    if (!canvasElement) return; 
+    
+    const ctx = canvasElement.getContext('2d');
+    if (window.myBarChart) window.myBarChart.destroy();
+
+    window.myBarChart = new Chart(ctx, {
+        type: 'bar', // Balkendiagramm
         data: {
-            labels: [],
+            labels: [], // X-Achse (Jahre: 2020, 2021, ...)
             datasets: [{
-                label: 'Temperatur °C', data: [], borderWidth: 2, fill: false, tension: 0.1,
-                segment: { borderColor: (ctx) => (ctx.p0 && ctx.p0.parsed) ? (ctx.p0.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)') : 'var(--pico-color-red-600)', },
-                pointBackgroundColor: (ctx) => (ctx.parsed) ? (ctx.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)') : 'var(--pico-color-red-600)',
-                pointBorderColor: (ctx) => (ctx.parsed) ? (ctx.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)') : 'var(--pico-color-red-600)'
+                label: 'Regenmenge (mm)', // Wird durch JSON überschrieben
+                data: [], // Y-Achse (Werte: 318, 404.5, ...)
+                backgroundColor: 'var(--pico-color-blue-500)',
+                borderColor: 'var(--pico-color-blue-600)',
+                borderWidth: 1
             }]
         },
         options: {
-            responsive: true, maintainAspectRatio: false,
-            scales: { x: { ticks: { autoSkip: true, maxTicksLimit: 12 } }, y: { beginAtZero: false } },
-            plugins: { legend: { display: false } }
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true // Regen fängt bei 0 an
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true, // Zeigt die Legende ("Jahresregenmenge") an
+                    position: 'top',
+                }
+            }
         }
     });
+    regenChart = window.myBarChart;
+}
+
+// --- Graph initialisieren (Temperatur) ---
+function initChart() {
+    // ... (Code unverändert)
+    const ctx = document.getElementById('tempChartCanvas').getContext('2d');
+    if (window.myLineChart) window.myLineChart.destroy();
+    window.myLineChart = new Chart(ctx, { /* ... (dein Linien-Chart-Code) ... */ });
     tempChart = window.myLineChart;
 }
 
 
 // --- 3. MQTT-Verbindung ---
 const clientUrl = `wss://${HIVE_MQ_HOST}:${HIVE_MQ_PORT}/mqtt`;
-// ... (CODE UNVERÄNDERT) ...
+// ... (Code unverändert)
 const options = { clientId: 'mein-web-dashboard-' + Math.random().toString(16).substr(2, 8), username: HIVE_MQ_USER, password: HIVE_MQ_PASS, clean: true };
 console.log('Verbinde mit ' + clientUrl);
 const client = mqtt.connect(clientUrl, options);
 
 // --- 4. Event-Handler ---
 client.on('connect', () => {
-    // ... (CODE UNVERÄNDERT) ...
+    // ... (Code unverändert)
     console.log('Erfolgreich mit HiveMQ verbunden!');
     statusElement.textContent = 'Verbunden ✅';
     statusElement.style.backgroundColor = 'var(--pico-color-green-200)';
@@ -141,9 +139,8 @@ client.on('message', (topic, payload) => {
     const mapping = topicMap[topic];
     if (!mapping) return;
 
-    // ----- SPEZIALFALL 1: History-Daten für den Graphen -----
+    // ----- SPEZIALFALL 1: Temperatur-History (Linien-Chart) -----
     if (mapping.id === 'aussen-temp-chart') {
-        // ... (CODE UNVERÄNDERT) ...
         try {
             const historyData = JSON.parse(message);
             const labels = historyData.map(d => new Date(d._time).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }));
@@ -151,64 +148,63 @@ client.on('message', (topic, payload) => {
             tempChart.data.labels = labels;
             tempChart.data.datasets[0].data = dataPoints;
             tempChart.update();
-            console.log('Graph mit 24h-Daten gefüllt.');
-        } catch (e) { console.error('Fehler beim Parsen der History-JSON:', e); }
+            console.log('Temperatur-Graph (24h) gefüllt.');
+        } catch (e) { console.error('Fehler beim Parsen der Temperatur-History-JSON:', e); }
 
-    // ----- SPEZIALFALL 2: Live-Temperatur (Text UND Graph) -----
+    // ### NEUER SPEZIALFALL 2: Regen-History (Bar-Chart) ###
+    } else if (mapping.id === 'regen-chart-jahresstat') {
+        try {
+            const data = JSON.parse(message);
+            // Prüfen, ob Daten vorhanden sind und die Struktur passt
+            if (data && data[0]) {
+                const chartData = data[0];
+                regenChart.data.labels = chartData.labels;
+                regenChart.data.datasets[0].data = chartData.data;
+                regenChart.data.datasets[0].label = chartData.series[0] || 'Regenmenge (mm)';
+                regenChart.update();
+                console.log('Regen-Graph (Jahr) gefüllt.');
+            }
+        } catch (e) {
+            console.error('Fehler beim Parsen der Regen-History-JSON:', e);
+        }
+
+    // ----- SPEZIALFALL 3: Live-Temperatur (Text UND Graph) -----
     } else if (topic === 'home/temp/auszen') {
-        // ... (CODE UNVERÄNDERT) ...
+        // ... (Code unverändert)
         const element = document.getElementById(mapping.id);
         if (element) element.textContent = `${parseFloat(message).toFixed(1)} ${mapping.unit}`;
         if (tempChart) { /* ... (Graph-Update-Logik) ... */ }
 
     // ----- STANDARD-FALL: Alle anderen Widgets -----
     } else {
+        // ... (Code unverändert)
         const element = document.getElementById(mapping.id);
         if (!element) { console.error(`Element mit ID "${mapping.id}" nicht gefunden!`); return; }
         
         let displayValue = message;
-        if (mapping.formatter) {
-            displayValue = mapping.formatter(message);
-        }
+        if (mapping.formatter) { displayValue = mapping.formatter(message); }
         
         const unit = mapping.unit || '';
         element.textContent = displayValue + unit;
 
-        // Styling für Regen
-        if (topic === 'home/regen/status') {
-            // ... (CODE UNVERÄNDERT) ...
-        }
+        if (topic === 'home/regen/status') { /* ... (Regen-Stil-Logik) ... */ }
 
-        // Logik für Müll & Unwetter
         if (mapping.widgetId) {
             const widgetElement = document.getElementById(mapping.widgetId);
             if (!widgetElement) { console.error(`Widget-Element mit ID "${mapping.widgetId}" nicht gefunden!`); return; }
-
-            // Müll-Logik
-            if (topic.includes('gasse/müll')) {
-                setMuellStyle(widgetElement, message);
-            }
-            
-            // ### AKTUALISIERTE UNWETTER-LOGIK ###
-            // Ruft die Styling-Funktion mit dem *originalen* Payload (`message`) auf,
-            // da dieser "Orange", "Rot" etc. enthält.
-            if (topic.includes('gasse/unwetter')) {
-                setUnwetterStyle(widgetElement, message);
-            }
+            if (topic.includes('gasse/müll')) { setMuellStyle(widgetElement, message); }
+            if (topic.includes('gasse/unwetter')) { setUnwetterStyle(widgetElement, message); }
         }
     }
 });
 
 
 // Fehler- und Reconnect-Handler
-client.on('error', (err) => {
-    // ... (CODE UNVERÄNDERT) ...
-});
-client.on('reconnect', () => {
-    // ... (CODE UNVERÄNDERT) ...
-});
+client.on('error', (err) => { /* ... (unverändert) ... */ });
+client.on('reconnect', () => { /* ... (unverändert) ... */ });
 
 // --- 5. App starten ---
 console.log('App wird initialisiert...');
-initChart();
-console.log('Chart initialisiert');
+initChart(); // Temperatur-Chart
+initRegenChart(); // ### NEUEN CHART INITIALISIEREN ###
+console.log('Charts initialisiert');

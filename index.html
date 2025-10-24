@@ -7,7 +7,7 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
     
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=9">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -20,45 +20,41 @@
             <p>Verbindungsstatus: <mark id="status">Verbinde...</mark></p>
         </header>
 
-
-        <div class="grid" id="row-1">
-            <article id="widget-muell-naechste">
-                <header><strong>Nächste Müllabholung</strong></header>
-                <span id="muell-naechste" class="data">--</span>
-            </article>
+        <div data-tabs>
             
-            <article id="widget-unwetter">
-                <header><strong>Unwetterwarnung</strong></header>
-                <span id="unwetter-warnung" class="data">--</span>
-            </article>
-        </div>
+            <details open>
+                <summary role="button">Dashboard</summary>
+                
+                <div class="grid" id="row-1">
+                    <article id="widget-muell-naechste"><header><strong>Nächste Müllabholung</strong></header><span id="muell-naechste" class="data">--</span></article>
+                    <article id="widget-unwetter"><header><strong>Unwetterwarnung</strong></header><span id="unwetter-warnung" class="data">--</span></article>
+                </div>
 
+                <div class="grid" id="row-2">
+                    <article><header><strong>Außentemperatur (Live)</strong></header><span id="aussen-temp" class="data">-- °C</span></article>
+                    <article><header><strong>Regnet es?</strong></header><span id="regen-status" class="data">--</span></article>
+                    <article><header><strong>Luftfeuchtigkeit Außen</strong></header><span id="aussen-luft" class="data">-- %</span></article>
+                </div>
 
-        <div class="grid" id="row-2">
-            <article>
-                <header><strong>Außentemperatur (Live)</strong></header>
-                <span id="aussen-temp" class="data">-- °C</span>
-            </article>
-
-            <article>
-                <header><strong>Regnet es?</strong></header>
-                <span id="regen-status" class="data">--</span>
-            </article>
-
-            <article>
-                <header><strong>Luftfeuchtigkeit Außen</strong></header>
-                <span id="aussen-luft" class="data">-- %</span>
-            </article>
-        </div>
-
-
-        <article>
-            <header><strong>Außentemperatur der letzten 24 Stunden</strong></header>
-            <div id="chart-wrapper">
-                <canvas id="tempChartCanvas"></canvas>
-            </div>
-        </article>
-
+                <article>
+                    <header><strong>Außentemperatur der letzten 24 Stunden</strong></header>
+                    <div id="chart-wrapper">
+                        <canvas id="tempChartCanvas"></canvas>
+                    </div>
+                </article>
+                
+            </details> <details>
+                <summary role="button">Regenstatistik</summary>
+                
+                <article>
+                    <header><strong>Jahresregenmenge (mm)</strong></header>
+                    
+                    <div id="chart-wrapper-regen">
+                        <canvas id="regenChartCanvas"></canvas>
+                    </div>
+                </article>
+                
+            </details> </div>
         
         <footer>
             <small>made with ❤️ and Google Gemini</small>
