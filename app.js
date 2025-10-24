@@ -35,14 +35,15 @@ const topicMap = {
     'home/regen/stat1m': { id: 'regen-1m', unit: ' mm' },
     'home/regen/stat3m': { id: 'regen-3m', unit: ' mm' },
     'home/regen/stat6m': { id: 'regen-6m', unit: ' mm' },
+    'home/regen/stat12m': { id: 'regen-12m', unit: ' mm' }, // Added topic
     'home/wetter/prognose/morgen': {
         id: 'wetter-prognose',
         unit: '',
         widgetId: 'widget-prognose'
     },
     'home/wind/now': {
-        id: 'wind-now', // ID des <span> Elements
-        unit: ' km/h'   // Einheit (ggf. anpassen)
+        id: 'wind-now',
+        unit: ' km/h'
     }
 };
 
@@ -177,7 +178,7 @@ try {
 
     client.on('message', (topic, payload) => {
         const message = payload.toString();
-        // console.log(`Nachricht empfangen auf Topic '${topic}': "${message}"`); // Kann man wieder aktivieren bei Bedarf
+        // console.log(`Nachricht empfangen auf Topic '${topic}': "${message}"`);
 
         const mapping = topicMap[topic];
         if (!mapping) return;
@@ -240,10 +241,10 @@ try {
             if (!element) { console.error(`Element mit ID "${mapping.id}" nicht gefunden!`); return; }
 
             let displayValue = message;
-            // Optional: Runden für Wind
-            // if (topic === 'home/wind/now') {
-            //     const speed = parseFloat(message);
-            //     displayValue = isNaN(speed) ? message : speed.toFixed(1);
+            // Optional: Runden für Wind/Regen
+            // if (topic.includes('/wind/') || topic.includes('/regen/stat')) {
+            //     const numValue = parseFloat(message);
+            //     displayValue = isNaN(numValue) ? message : numValue.toFixed(1);
             // }
 
             if (mapping.formatter) { displayValue = mapping.formatter(message); }

@@ -7,7 +7,7 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
     
-    <link rel="stylesheet" href="style.css?v=13">
+    <link rel="stylesheet" href="style.css?v=14">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -33,12 +33,7 @@
 
                 <div class="grid" id="row-2">
                     <article><header><strong>Außentemperatur (Live)</strong></header><span id="aussen-temp" class="data">-- °C</span></article>
-                    
-                    <article>
-                        <header><strong>Wind Aktuell</strong></header>
-                        <span id="wind-now" class="data">-- km/h</span> 
-                    </article>
-                    
+                    <article><header><strong>Wind Aktuell</strong></header><span id="wind-now" class="data">-- km/h</span></article>
                     <article><header><strong>Regnet es?</strong></header><span id="regen-status" class="data">--</span></article>
                     <article><header><strong>Luftfeuchtigkeit Außen</strong></header><span id="aussen-luft" class="data">-- %</span></article>
                 </div>
@@ -55,12 +50,14 @@
                 
                 <article>
                     <header><strong>Regenmengen (Summe)</strong></header>
+                    
                     <div class="stats-grid">
                         <div><small>Letzte 7 Tage:</small><strong id="regen-7d">-- mm</strong></div>
                         <div><small>Letzte 14 Tage:</small><strong id="regen-14d">-- mm</strong></div>
                          <div><small>Letzter Monat:</small><strong id="regen-1m">-- mm</strong></div>
                          <div><small>Letzte 3 Monate:</small><strong id="regen-3m">-- mm</strong></div>
                          <div><small>Letzte 6 Monate:</small><strong id="regen-6m">-- mm</strong></div>
+                         <div><small>Letzte 12 Monate:</small><strong id="regen-12m">-- mm</strong></div> 
                     </div>
                     <hr>
                     <header><strong>Jahresregenmenge (mm)</strong></header>
