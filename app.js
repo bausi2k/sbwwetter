@@ -2,9 +2,9 @@
 const HIVE_MQ_HOST = 'bb23c26981ce486a9de6a8d83cff9f90.s1.eu.hivemq.cloud';
 const HIVE_MQ_PORT = 8884;
 const HIVE_MQ_USER = 'sbwwetter';
-const HIVE_MQ_PASS = 'pbd7chu6kba!zrd2GTG';
+const HIVE_MQ_PASS = 'pbd7chu6kba!zrd2GTG'; 
 
-// --- Flexible Topic-Zuordnung ---
+// --- coole Flexible Topic-Zuordnung ---
 const topicMap = {
     'home/temp/auszen': { id: 'aussen-temp', unit: ' °C' },
     'home/luftfeuchte/aktuell': { id: 'aussen-luft', unit: ' %' },
