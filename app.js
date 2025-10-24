@@ -56,6 +56,8 @@ function setUnwetterStyle(widgetElement, payload) {
     else { widgetElement.classList.add('unwetter-inaktiv'); }
 }
 
+// ... (Anfang der app.js bleibt gleich) ...
+
 function initRegenChart() {
     const canvasElement = document.getElementById('regenChartCanvas');
     if (!canvasElement) return;
@@ -69,8 +71,9 @@ function initRegenChart() {
             datasets: [{
                 label: 'Regenmenge (mm)',
                 data: [],
-                backgroundColor: 'var(--pico-color-blue-500)',
-                borderColor: 'var(--pico-color-blue-600)',
+                // ### HIER IST DIE ÄNDERUNG: Feste Hex-Farben ###
+                backgroundColor: '#2196F3', // Ein klares Blau
+                borderColor: '#1976D2',     // Ein etwas dunkleres Blau für den Rand
                 borderWidth: 1
             }]
         },
@@ -83,6 +86,8 @@ function initRegenChart() {
     });
     regenChart = window.myBarChart;
 }
+
+// ... (Rest der app.js bleibt gleich) ...
 
 function initChart() {
     const canvasElement = document.getElementById('tempChartCanvas');
