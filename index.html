@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feuersbrunn - Sonnenblumenweg</title>
-    
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
-    
-    <link rel="stylesheet" href="style.css?v=14">
+
+    <link rel="stylesheet" href="style.css?v=15">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -21,10 +21,10 @@
         </header>
 
         <div data-tabs>
-            
+
             <details open>
                 <summary role="button">Dashboard</summary>
-                
+
                 <div class="grid" id="row-1">
                     <article id="widget-muell-naechste"><header><strong>Nächste Müllabholung</strong></header><span id="muell-naechste" class="data">--</span></article>
                     <article id="widget-prognose"><header><strong>Prognose Morgen</strong></header><span id="wetter-prognose" class="data">--</span></article>
@@ -44,20 +44,19 @@
                         <canvas id="tempChartCanvas"></canvas>
                     </div>
                 </article>
-                
+
             </details> <details>
                 <summary role="button">Regenstatistik</summary>
-                
+
                 <article>
                     <header><strong>Regenmengen (Summe)</strong></header>
-                    
                     <div class="stats-grid">
                         <div><small>Letzte 7 Tage:</small><strong id="regen-7d">-- mm</strong></div>
                         <div><small>Letzte 14 Tage:</small><strong id="regen-14d">-- mm</strong></div>
                          <div><small>Letzter Monat:</small><strong id="regen-1m">-- mm</strong></div>
                          <div><small>Letzte 3 Monate:</small><strong id="regen-3m">-- mm</strong></div>
                          <div><small>Letzte 6 Monate:</small><strong id="regen-6m">-- mm</strong></div>
-                         <div><small>Letzte 12 Monate:</small><strong id="regen-12m">-- mm</strong></div> 
+                         <div><small>Letzte 12 Monate:</small><strong id="regen-12m">-- mm</strong></div>
                     </div>
                     <hr>
                     <header><strong>Jahresregenmenge (mm)</strong></header>
@@ -65,15 +64,20 @@
                         <canvas id="regenChartCanvas"></canvas>
                     </div>
                 </article>
-                
+
             </details> </div>
-        
+
         <footer>
             <small>made with ❤️ and Google Gemini @ Gruber 🏡</small>
         </footer>
 
-    </main> 
-    
+    </main>
+
+    <div id="cookie-banner" class="container hidden">
+        <small>Wir verwenden Cookies (nur technisch notwendige), um die Funktionalität zu gewährleisten.</small>
+        <button id="cookie-accept" class="secondary outline">Verstanden</button>
+    </div>
+
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script src="app.js"></script>
 

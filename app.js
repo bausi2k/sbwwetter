@@ -35,7 +35,7 @@ const topicMap = {
     'home/regen/stat1m': { id: 'regen-1m', unit: ' mm' },
     'home/regen/stat3m': { id: 'regen-3m', unit: ' mm' },
     'home/regen/stat6m': { id: 'regen-6m', unit: ' mm' },
-    'home/regen/stat12m': { id: 'regen-12m', unit: ' mm' }, // Added topic
+    'home/regen/stat12m': { id: 'regen-12m', unit: ' mm' },
     'home/wetter/prognose/morgen': {
         id: 'wetter-prognose',
         unit: '',
@@ -299,3 +299,18 @@ try {
     statusElement.style.backgroundColor = 'var(--pico-color-red-200)';
     statusElement.style.color = 'var(--pico-color-red-700)';
 }
+
+// --- Cookie Banner Logic ---
+document.addEventListener('DOMContentLoaded', () => {
+    const banner = document.getElementById('cookie-banner');
+    const acceptButton = document.getElementById('cookie-accept');
+
+    if (!localStorage.getItem('cookieConsent')) {
+        banner.classList.remove('hidden');
+    }
+
+    acceptButton.addEventListener('click', () => {
+        localStorage.setItem('cookieConsent', 'true');
+        banner.classList.add('hidden');
+    });
+});

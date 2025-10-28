@@ -1,4 +1,4 @@
-/* style.css (BEREINIGTE VERSION V13) */
+/* style.css (BEREINIGTE VERSION V15) */
 
 /* Überschrift des Dashboards zentrieren */
 header {
@@ -52,7 +52,7 @@ article header {
     #row-1 {
         grid-template-columns: 1fr 1fr 1fr;
     }
-    /* Zeile 2 hat jetzt 4 Spalten */
+    /* Zeile 2 hat 4 Spalten */
     #row-2 {
         grid-template-columns: 1fr 1fr 1fr 1fr;
     }
@@ -61,7 +61,7 @@ article header {
 /* --- REGEN-STATISTIKEN --- */
 .stats-grid {
     display: grid;
-    /* Auf großen Schirmen 5 Spalten, auf kleinen 2 */
+    /* Auf großen Schirmen 5/6 Spalten, auf kleinen 2/3 */
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem; /* Abstand zwischen den Blöcken */
     text-align: center;
@@ -225,4 +225,30 @@ footer {
     text-align: center;
     margin-top: 2rem;
     opacity: 0.8; /* Macht es etwas dezenter */
+}
+
+/* --- COOKIE BANNER STILE --- */
+#cookie-banner {
+    position: fixed; /* Bleibt am unteren Rand */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--pico-card-background-color);
+    border-top: 1px solid var(--pico-muted-border-color);
+    padding: 1rem;
+    margin-bottom: 0; /* Überschreibt Standard-Margin vom Container */
+    z-index: 1000; /* Stellt sicher, dass er über allem liegt */
+    display: flex; /* Nebeneinander anordnen */
+    justify-content: space-between; /* Text links, Button rechts */
+    align-items: center; /* Vertikal zentrieren */
+    gap: 1rem; /* Abstand zwischen Text und Button */
+}
+
+#cookie-banner.hidden {
+    display: none; /* Banner ausblenden */
+}
+
+#cookie-banner button {
+    margin-bottom: 0; /* Pico fügt Buttons oft Margin hinzu */
+    white-space: nowrap; /* Verhindert Umbruch bei kleinem Button-Text */
 }
