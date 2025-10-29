@@ -1,254 +1,77 @@
-/* style.css (BEREINIGTE VERSION V15) */
+/* style.css (BEREINIGTE VERSION V16) */
 
-/* Überschrift des Dashboards zentrieren */
-header {
-    text-align: center;
-    margin-bottom: 2rem;
-}
+/* ... (Alle alten Regeln von header bis article#widget-prognose bleiben 1:1 gleich) ... */
 
-/* Die großen Daten-Anzeigen (Live-Werte) */
-.data {
-    font-size: 2.5em; /* Standard-Größe für Zahlen */
-    font-weight: bold;
-    color: var(--pico-primary);
-    display: block;
-    margin-top: 1rem;
-    text-align: center;
-}
-
-/* Verbindungsstatus-Badge hervorheben */
-#status {
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--pico-border-radius);
-}
-
-/* Widget-Titel zentrieren */
-article header {
-    text-align: center;
-    font-size: 1.1em;
-}
-
-/* Definiert einen festen Rahmen für den Temperatur-Graphen */
-#chart-wrapper {
-    position: relative;
-    height: 350px;
-}
-
-/* Definiert einen festen Rahmen für den Regen-Graphen */
-#chart-wrapper-regen {
-    position: relative;
-    height: 350px;
-}
-
-/* --- LAYOUT-REGELN --- */
-/* Allgemeiner Abstand zwischen Grid-Zeilen */
-.grid {
-    margin-bottom: 1.5rem;
-}
-
-/* Desktop-Layout (alles über 768px Breite) */
+header { text-align: center; margin-bottom: 2rem; }
+.data { font-size: 2.5em; font-weight: bold; color: var(--pico-primary); display: block; margin-top: 1rem; text-align: center; }
+#status { padding: 0.25rem 0.5rem; border-radius: var(--pico-border-radius); }
+article header { text-align: center; font-size: 1.1em; }
+#chart-wrapper { position: relative; height: 350px; }
+#chart-wrapper-regen { position: relative; height: 350px; }
+.grid { margin-bottom: 1.5rem; }
 @media (min-width: 768px) {
-    /* Zeile 1 hat 3 Spalten */
-    #row-1 {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-    /* Zeile 2 hat 4 Spalten */
-    #row-2 {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-    }
+    #row-1, #row-2 { grid-template-columns: 1fr 1fr 1fr; }
+    #row-2 { grid-template-columns: 1fr 1fr 1fr 1fr; }
 }
-
-/* --- REGEN-STATISTIKEN --- */
-.stats-grid {
-    display: grid;
-    /* Auf großen Schirmen 5/6 Spalten, auf kleinen 2/3 */
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem; /* Abstand zwischen den Blöcken */
-    text-align: center;
-    margin-bottom: 1.5rem; /* Abstand zur Trennlinie */
-    padding: 1rem;
-    background-color: var(--pico-card-background-color); /* Leichter Hintergrund */
-    border-radius: var(--pico-border-radius);
-}
-.stats-grid div {
-    /* Kein extra Styling nötig, Text wird zentriert */
-}
-.stats-grid small {
-    display: block; /* Eigene Zeile für Label */
-    color: var(--pico-muted-color);
-    margin-bottom: 0.25rem;
-}
-.stats-grid strong {
-    font-size: 1.5em; /* Größere Schrift für den Wert */
-    color: var(--pico-primary);
-}
-
-/* --- MÜLL & UNWETTER & PROGNOSE & WIND STILE --- */
-
-/* Basis-Stil für Müll-Widgets */
-#muell-naechste {
-    font-size: 1.25em;
-    font-weight: normal;
-    min-height: 2.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Restmüll */
-article.muell-rest {
-    background-color: #fbfcfc !important;
-    border: 2px solid #4a4a4a !important;
-}
-article.muell-rest header strong,
-article.muell-rest .data {
-    color: #2b2b2b !important;
-    font-weight: bold;
-}
-
-/* Gelber Sack */
-article.muell-gelb {
-    background-color: #fbfcfc !important;
-    border: 2px solid #ffd700 !important;
-}
-article.muell-gelb header strong,
-article.muell-gelb .data {
-    color: #e6b800 !important;
-    font-weight: bold;
-}
-
-/* Biotonne */
-article.muell-bio {
-    background-color: #fbfcfc !important;
-    border: 2px solid #8b4513 !important;
-}
-article.muell-bio header strong,
-article.muell-bio .data {
-    color: #8b4513 !important;
-    font-weight: bold;
-}
-
-/* Altpapier */
-article.muell-papier {
-    background-color: #fbfcfc !important;
-    border: 2px solid #dc3545 !important;
-}
-article.muell-papier header strong,
-article.muell-papier .data {
-    color: #dc3545 !important;
-    font-weight: bold;
-}
-
-/* Basis-Stil für Unwetter-Text */
-#unwetter-warnung {
-    font-size: 1.25em;
-    font-weight: normal;
-    min-height: 2.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Warnung ORANGE */
-article.unwetter-aktiv-orange {
-    background-color: #fbfcfc !important;
-    border: 2px solid #fd7e14 !important; /* Orange */
-}
-article.unwetter-aktiv-orange header strong,
-article.unwetter-aktiv-orange .data {
-    color: #fd7e14 !important;
-    font-weight: bold;
-}
-
-/* Warnung ROT */
-article.unwetter-aktiv-rot {
-    background-color: #fbfcfc !important;
-    border: 2px solid #dc3545 !important; /* Rot */
-}
-article.unwetter-aktiv-rot header strong,
-article.unwetter-aktiv-rot .data {
-    color: #dc3545 !important;
-    font-weight: bold;
-}
-
-/* Warnung VIOLETT */
-article.unwetter-aktiv-violett {
-    background-color: #fbfcfc !important;
-    border: 2px solid #6f42c1 !important; /* Violett */
-}
-article.unwetter-aktiv-violett header strong,
-article.unwetter-aktiv-violett .data {
-    color: #6f42c1 !important;
-    font-weight: bold;
-}
-
-/* Keine Warnung (Grauer Rahmen/Text) */
-article.unwetter-inaktiv {
-    background-color: #fbfcfc !important;
-    border: 2px solid #a0a0a0 !important;
-}
-article.unwetter-inaktiv header strong,
-article.unwetter-inaktiv .data {
-    color: #808080 !important;
-    font-weight: normal;
-}
-
-
-/* Basis-Stil für Prognose */
-#wetter-prognose {
-    font-size: 1.25em; /* Kleinere Schrift für Text */
-    font-weight: normal;
-    color: var(--pico-secondary); /* Neutrale Farbe */
-    min-height: 2.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 0.5rem; /* Etwas Platz links/rechts, falls Text lang wird */
-}
-/* Styling für das Prognose Widget selbst */
-article#widget-prognose {
-     background-color: #fbfcfc;
-     border: 2px solid var(--pico-muted-border-color);
-}
-article#widget-prognose header strong {
-    color: var(--pico-muted-color); /* Header neutral färben */
-}
-
-/* Stil für Wind (aktuell nur Standard .data) */
-#wind-now {
-    /* Hier könnten Anpassungen hin, falls nötig */
-}
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; text-align: center; margin-bottom: 1.5rem; padding: 1rem; background-color: var(--pico-card-background-color); border-radius: var(--pico-border-radius); }
+.stats-grid small { display: block; color: var(--pico-muted-color); margin-bottom: 0.25rem; }
+.stats-grid strong { font-size: 1.5em; color: var(--pico-primary); }
+#muell-naechste { font-size: 1.25em; font-weight: normal; min-height: 2.5em; display: flex; align-items: center; justify-content: center; }
+article.muell-rest { background-color: #fbfcfc !important; border: 2px solid #4a4a4a !important; }
+article.muell-rest header strong, article.muell-rest .data { color: #2b2b2b !important; font-weight: bold; }
+article.muell-gelb { background-color: #fbfcfc !important; border: 2px solid #ffd700 !important; }
+article.muell-gelb header strong, article.muell-gelb .data { color: #e6b800 !important; font-weight: bold; }
+article.muell-bio { background-color: #fbfcfc !important; border: 2px solid #8b4513 !important; }
+article.muell-bio header strong, article.muell-bio .data { color: #8b4513 !important; font-weight: bold; }
+article.muell-papier { background-color: #fbfcfc !important; border: 2px solid #dc3545 !important; }
+article.muell-papier header strong, article.muell-papier .data { color: #dc3545 !important; font-weight: bold; }
+#unwetter-warnung { font-size: 1.25em; font-weight: normal; min-height: 2.5em; display: flex; align-items: center; justify-content: center; }
+article.unwetter-aktiv-orange { background-color: #fbfcfc !important; border: 2px solid #fd7e14 !important; }
+article.unwetter-aktiv-orange header strong, article.unwetter-aktiv-orange .data { color: #fd7e14 !important; font-weight: bold; }
+article.unwetter-aktiv-rot { background-color: #fbfcfc !important; border: 2px solid #dc3545 !important; }
+article.unwetter-aktiv-rot header strong, article.unwetter-aktiv-rot .data { color: #dc3545 !important; font-weight: bold; }
+article.unwetter-aktiv-violett { background-color: #fbfcfc !important; border: 2px solid #6f42c1 !important; }
+article.unwetter-aktiv-violett header strong, article.unwetter-aktiv-violett .data { color: #6f42c1 !important; font-weight: bold; }
+article.unwetter-inaktiv { background-color: #fbfcfc !important; border: 2px solid #a0a0a0 !important; }
+article.unwetter-inaktiv header strong, article.unwetter-inaktiv .data { color: #808080 !important; font-weight: normal; }
+#wetter-prognose { font-size: 1.25em; font-weight: normal; color: var(--pico-secondary); min-height: 2.5em; display: flex; align-items: center; justify-content: center; padding: 0 0.5rem; }
+article#widget-prognose { background-color: #fbfcfc; border: 2px solid var(--pico-muted-border-color); }
+article#widget-prognose header strong { color: var(--pico-muted-color); }
+#wind-now { /* (Keine extra Stile) */ }
 
 
 /* --- FOOTER-STIL --- */
 footer {
     text-align: center;
     margin-top: 2rem;
-    opacity: 0.8; /* Macht es etwas dezenter */
+    opacity: 0.8;
+}
+/* Stellt sicher, dass der Link im Footer die <small> Textfarbe erbt */
+footer a.secondary {
+    color: inherit;
+    text-decoration: underline;
 }
 
 /* --- COOKIE BANNER STILE --- */
 #cookie-banner {
-    position: fixed; /* Bleibt am unteren Rand */
+    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     background-color: var(--pico-card-background-color);
     border-top: 1px solid var(--pico-muted-border-color);
     padding: 1rem;
-    margin-bottom: 0; /* Überschreibt Standard-Margin vom Container */
-    z-index: 1000; /* Stellt sicher, dass er über allem liegt */
-    display: flex; /* Nebeneinander anordnen */
-    justify-content: space-between; /* Text links, Button rechts */
-    align-items: center; /* Vertikal zentrieren */
-    gap: 1rem; /* Abstand zwischen Text und Button */
+    margin-bottom: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
 }
-
 #cookie-banner.hidden {
-    display: none; /* Banner ausblenden */
+    display: none;
 }
-
 #cookie-banner button {
-    margin-bottom: 0; /* Pico fügt Buttons oft Margin hinzu */
-    white-space: nowrap; /* Verhindert Umbruch bei kleinem Button-Text */
+    margin-bottom: 0;
+    white-space: nowrap;
 }
