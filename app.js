@@ -6,48 +6,43 @@ const HIVE_MQ_PASS = 'pbd7chu6kba!zrd2GTG';
 
 // --- Flexible Topic-Zuordnung ---
 const topicMap = {
-    'home/temp/auszen': { id: 'aussen-temp', unit: ' °C' },
+    // Live-Werte (Text)
+    'home/temp/auszen': { id: 'aussen-temp', unit: ' °C', chartId: 'line-1' }, // Verknüpft mit Chart-Linie 1
     'home/luftfeuchte/aktuell': { id: 'aussen-luft', unit: ' %' },
     'home/regen/status': {
         id: 'regen-status',
         unit: '',
         formatter: (payload) => (payload === '1' ? 'Ja 🌧️' : 'Nein ☀️')
     },
-    'haus/historie/aussentemperatur_24h': {
-        id: 'aussen-temp-chart' // Spezialbehandlung
+    'home/wind/now': { id: 'wind-now', unit: ' km/h' },
+    
+    // Live-Werte (Text + Chart)
+    'home/zero': { id: 'temp-chart-line-2', chartId: 'line-2' }, // Verknüpft mit Chart-Linie 2 (kein Text-Widget)
+    'home/webservice/gefuehltetemperatur': {
+        id: 'gefuehlte-temp',
+        unit: ' °C',
+        chartId: 'line-3' // Verknüpft mit Chart-Linie 3
     },
-    'gasse/müll/nächste': {
-        id: 'muell-naechste',
-        unit: '',
-        widgetId: 'widget-muell-naechste'
-    },
+
+    // Kacheln
+    'gasse/müll/nächste': { id: 'muell-naechste', unit: '', widgetId: 'widget-muell-naechste' },
     'gasse/unwetter': {
         id: 'unwetter-warnung',
         unit: '',
         widgetId: 'widget-unwetter',
         formatter: (payload) => (!payload || payload.trim() === '') ? "keine Unwetterinformationen" : payload
     },
-    'home/regen/jahresstat': {
-        id: 'regen-chart-jahresstat' // Spezialbehandlung
-    },
+    'home/wetter/prognose/morgen': { id: 'wetter-prognose', unit: '', widgetId: 'widget-prognose' },
+    
+    // Regen-Tab
+    'haus/historie/aussentemperatur_24h': { id: 'aussen-temp-chart' }, // Spezialbehandlung
+    'home/regen/jahresstat': { id: 'regen-chart-jahresstat' }, // Spezialbehandlung
     'home/regen/stat7d': { id: 'regen-7d', unit: ' mm' },
     'home/regen/stat14d': { id: 'regen-14d', unit: ' mm' },
     'home/regen/stat1m': { id: 'regen-1m', unit: ' mm' },
     'home/regen/stat3m': { id: 'regen-3m', unit: ' mm' },
     'home/regen/stat6m': { id: 'regen-6m', unit: ' mm' },
-    'home/regen/stat12m': { id: 'regen-12m', unit: ' mm' },
-    'home/wetter/prognose/morgen': {
-        id: 'wetter-prognose',
-        unit: '',
-        widgetId: 'widget-prognose'
-    },
-    'home/wind/now': {
-        id: 'wind-now',
-        unit: ' km/h'
-    },
-    'home/zero': {
-        id: 'temp-chart-line-2' // Spezialbehandlung
-    }
+    'home/regen/stat12m': { id: 'regen-12m', unit: ' mm' }
 };
 
 // --- 2. Globale Variablen ---
@@ -115,6 +110,7 @@ function initChart() {
             labels: [],
             datasets: [
                 {
+                    // DATASET 0: Temperatur
                     label: 'Temperatur °C',
                     data: [],
                     borderWidth: 2,
@@ -127,6 +123,7 @@ function initChart() {
                     pointBorderColor: (ctx) => (ctx.parsed) ? (ctx.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)') : 'var(--pico-color-red-600)'
                 },
                 {
+                    // DATASET 1: 'Zero' LINIE
                     label: 'Zero Line',
                     data: [],
                     borderWidth: 2,
@@ -136,6 +133,19 @@ function initChart() {
                     pointBackgroundColor: 'var(--pico-color-green-500)',
                     pointBorderColor: 'var(--pico-color-green-500)',
                     pointRadius: 2
+                },
+                {
+                    // DATASET 2: 'Gefühlte' LINIE
+                    label: 'Gefühlte Temp. °C',
+                    data: [],
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    borderColor: 'var(--pico-color-orange-500)',
+                    pointBackgroundColor: 'var(--pico-color-orange-500)',
+                    pointBorderColor: 'var(--pico-color-orange-500)',
+                    pointRadius: 2,
+                    borderDash: [5, 5] // Gestrichelte Linie
                 }
             ]
         },
@@ -147,7 +157,18 @@ function initChart() {
                 y: { beginAtZero: false }
             },
             plugins: {
-                legend: { display: true, position: 'top' }
+                // ### HIER IST DIE ÄNDERUNG: 'Zero Line' ausblenden ###
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        // Diese Funktion filtert die Legenden-Einträge
+                        filter: function(legendItem, chartData) {
+                            // Zeige alle an, AUSSER dem mit dem Text 'Zero Line'
+                            return legendItem.text !== 'Zero Line';
+                        }
+                    }
+                }
             }
         }
     });
@@ -162,15 +183,14 @@ initRegenChart();
 console.log('Charts initialisiert.');
 
 
-// --- 5. MQTT verbinden (ERST NACHDEM DIE CHARTS INITIALISIERT SIND) ---
-
+// --- 5. MQTT verbinden ---
 const clientUrl = `wss://${HIVE_MQ_HOST}:${HIVE_MQ_PORT}/mqtt`;
 const options = {
     clientId: 'mein-web-dashboard-' + Math.random().toString(16).substr(2, 8),
     username: HIVE_MQ_USER,
     password: HIVE_MQ_PASS,
     clean: true,
-    connectTimeout: 10000 // 10 Sekunden
+    connectTimeout: 10000
 };
 
 console.log('Verbinde mit ' + clientUrl);
@@ -209,7 +229,9 @@ try {
                 if (tempChart) {
                     tempChart.data.labels = labels;
                     tempChart.data.datasets[0].data = dataPoints;
-                    tempChart.data.datasets[1].data = new Array(labels.length).fill(null);
+                    // Fülle die anderen Linien mit leeren Werten
+                    tempChart.data.datasets[1].data = []; 
+                    tempChart.data.datasets[2].data = [];
                     tempChart.update();
                 } else {
                     console.warn('Temperatur-Chart war bei Eintreffen der History-Nachricht noch nicht bereit.');
@@ -236,50 +258,51 @@ try {
             } catch (e) {
                 console.error('Fehler bei Regen-History:', e);
             }
-
-        // ----- SPEZIALFALL 3: Live-Temperatur (Linie 1) -----
-        } else if (topic === 'home/temp/auszen') {
-            const element = document.getElementById(mapping.id);
+            
+        // ----- SPEZIALFALL 3: Live-Chart-Daten (Temp, Zero, Gefühlt) -----
+        } else if (mapping.chartId) {
             const newValue = parseFloat(message).toFixed(1);
-            if (element) element.textContent = `${newValue} ${mapping.unit}`;
+            
+            // 1. Text-Widget aktualisieren (falls vorhanden)
+            const element = document.getElementById(mapping.id);
+            if (element) {
+                element.textContent = `${newValue} ${mapping.unit || ''}`;
+            }
 
+            // 2. Chart aktualisieren
             if (tempChart) {
                 const now = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-                const lastDataPoint1 = tempChart.data.datasets[1].data.slice(-1)[0] || null;
+                // Hole die letzten Werte der anderen Linien
+                const lastPoints = tempChart.data.datasets.map(ds => ds.data.slice(-1)[0] || null);
 
                 tempChart.data.labels.push(now);
-                tempChart.data.datasets[0].data.push(newValue);
-                tempChart.data.datasets[1].data.push(lastDataPoint1);
+                
+                // Füge den neuen Wert an der richtigen Stelle ein
+                if (mapping.chartId === 'line-1') {
+                    tempChart.data.datasets[0].data.push(newValue);
+                    tempChart.data.datasets[1].data.push(lastPoints[1]);
+                    tempChart.data.datasets[2].data.push(lastPoints[2]);
+                } else if (mapping.chartId === 'line-2') {
+                    tempChart.data.datasets[0].data.push(lastPoints[0]);
+                    tempChart.data.datasets[1].data.push(newValue);
+                    tempChart.data.datasets[2].data.push(lastPoints[2]);
+                } else if (mapping.chartId === 'line-3') {
+                    tempChart.data.datasets[0].data.push(lastPoints[0]);
+                    tempChart.data.datasets[1].data.push(lastPoints[1]);
+                    tempChart.data.datasets[2].data.push(newValue);
+                }
 
+                // Trimmen, wenn zu lang
                 if (tempChart.data.labels.length > 50) {
                     tempChart.data.labels.shift();
                     tempChart.data.datasets[0].data.shift();
                     tempChart.data.datasets[1].data.shift();
+                    tempChart.data.datasets[2].data.shift();
                 }
                 
                 tempChart.update();
             }
 
-        // ----- SPEZIALFALL 4: 'Zero' Line (Linie 2) -----
-        } else if (mapping.id === 'temp-chart-line-2') { // 'home/zero'
-            if (tempChart) {
-                const newValue = parseFloat(message).toFixed(1);
-                const now = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-                const lastDataPoint0 = tempChart.data.datasets[0].data.slice(-1)[0] || null;
-
-                tempChart.data.labels.push(now);
-                tempChart.data.datasets[0].data.push(lastDataPoint0);
-                tempChart.data.datasets[1].data.push(newValue);
-
-                if (tempChart.data.labels.length > 50) {
-                    tempChart.data.labels.shift();
-                    tempChart.data.datasets[0].data.shift();
-                    tempChart.data.datasets[1].data.shift();
-                }
-
-                tempChart.update();
-            }
-        
         // ----- STANDARD-FALL: Alle anderen Widgets -----
         } else {
             const element = document.getElementById(mapping.id);

@@ -7,7 +7,7 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
     
-    <link rel="stylesheet" href="style.css?v=16">
+    <link rel="stylesheet" href="style.css?v=17">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -33,6 +33,12 @@
 
                 <div class="grid" id="row-2">
                     <article><header><strong>Außentemperatur (Live)</strong></header><span id="aussen-temp" class="data">-- °C</span></article>
+                    
+                    <article>
+                        <header><strong>Gefühlte Temp.</strong></header>
+                        <span id="gefuehlte-temp" class="data">-- °C</span>
+                    </article>
+                    
                     <article><header><strong>Wind Aktuell</strong></header><span id="wind-now" class="data">-- km/h</span></article>
                     <article><header><strong>Regnet es?</strong></header><span id="regen-status" class="data">--</span></article>
                     <article><header><strong>Luftfeuchtigkeit Außen</strong></header><span id="aussen-luft" class="data">-- %</span></article>
@@ -68,11 +74,7 @@
             </details> </div>
         
         <footer>
-            <small>
-                made with ❤️ and Google Gemini @ Gruber 🏡
-                &nbsp;|&nbsp;
-                <a href="cookies.html" class="secondary">Cookie-Richtlinie</a>
-            </small>
+            <small>made with ❤️ and Google Gemini @ Gruber 🏡 | <a href="cookies.html" class="secondary">Cookie-Richtlinie</a></small>
         </footer>
 
     </main> 
