@@ -45,7 +45,6 @@ const topicMap = {
         id: 'wind-now',
         unit: ' km/h'
     },
-    // ### NEUES TOPIC FÜR 2. LINIE ###
     'home/zero': {
         id: 'temp-chart-line-2' // Spezialbehandlung
     }
@@ -77,16 +76,33 @@ function setUnwetterStyle(widgetElement, payload) {
 }
 
 function initRegenChart() {
-    // ... (unverändert) ...
     const canvasElement = document.getElementById('regenChartCanvas');
     if (!canvasElement) return;
     const ctx = canvasElement.getContext('2d');
     if (window.myBarChart) window.myBarChart.destroy();
-    window.myBarChart = new Chart(ctx, { /* ... (Code für Bar-Chart) ... */ });
+
+    window.myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Regenmenge (mm)',
+                data: [],
+                backgroundColor: '#2196F3',
+                borderColor: '#1976D2',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true } },
+            plugins: { legend: { display: true, position: 'top' } }
+        }
+    });
     regenChart = window.myBarChart;
 }
 
-// ### AKTUALISIERTE `initChart` FUNKTION ###
 function initChart() {
     const canvasElement = document.getElementById('tempChartCanvas');
     if (!canvasElement) return;
@@ -99,7 +115,6 @@ function initChart() {
             labels: [],
             datasets: [
                 {
-                    // DATASET 0: Temperatur
                     label: 'Temperatur °C',
                     data: [],
                     borderWidth: 2,
@@ -112,16 +127,15 @@ function initChart() {
                     pointBorderColor: (ctx) => (ctx.parsed) ? (ctx.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)') : 'var(--pico-color-red-600)'
                 },
                 {
-                    // DATASET 1: NEUE 'Zero' LINIE
-                    label: 'Zero Line', // Passe den Namen an, falls gewünscht
+                    label: 'Zero Line',
                     data: [],
                     borderWidth: 2,
                     fill: false,
                     tension: 0.1,
-                    borderColor: 'var(--pico-color-green-500)', // z.B. Grün
+                    borderColor: 'var(--pico-color-green-500)',
                     pointBackgroundColor: 'var(--pico-color-green-500)',
                     pointBorderColor: 'var(--pico-color-green-500)',
-                    pointRadius: 2 // Kleinere Punkte
+                    pointRadius: 2
                 }
             ]
         },
@@ -133,8 +147,7 @@ function initChart() {
                 y: { beginAtZero: false }
             },
             plugins: {
-                // Legende jetzt anzeigen, da wir 2 Linien haben
-                legend: { display: true, position: 'top' } 
+                legend: { display: true, position: 'top' }
             }
         }
     });
@@ -149,9 +162,17 @@ initRegenChart();
 console.log('Charts initialisiert.');
 
 
-// --- 5. MQTT verbinden ---
+// --- 5. MQTT verbinden (ERST NACHDEM DIE CHARTS INITIALISIERT SIND) ---
+
 const clientUrl = `wss://${HIVE_MQ_HOST}:${HIVE_MQ_PORT}/mqtt`;
-const options = { /* ... (unverändert) ... */ };
+const options = {
+    clientId: 'mein-web-dashboard-' + Math.random().toString(16).substr(2, 8),
+    username: HIVE_MQ_USER,
+    password: HIVE_MQ_PASS,
+    clean: true,
+    connectTimeout: 10000 // 10 Sekunden
+};
+
 console.log('Verbinde mit ' + clientUrl);
 try {
     client = mqtt.connect(clientUrl, options);
@@ -160,10 +181,17 @@ try {
     // --- 6. Event-Handler registrieren ---
 
     client.on('connect', () => {
-        // ... (unverändert) ...
+        console.log('✅✅✅ MQTT Connect Event ausgelöst! Erfolgreich verbunden!');
+        statusElement.textContent = 'Verbunden ✅';
+        statusElement.style.backgroundColor = 'var(--pico-color-green-200)';
+        statusElement.style.color = 'var(--pico-color-green-700)';
+        const topicsToSubscribe = Object.keys(topicMap);
+        client.subscribe(topicsToSubscribe, (err) => {
+            if (!err) console.log(`Erfolgreich Topics abonniert: ${topicsToSubscribe.join(', ')}`);
+            else console.error('Subscribe-Fehler:', err);
+        });
     });
 
-    // ### AKTUALISIERTER `on.message` HANDLER ###
     client.on('message', (topic, payload) => {
         const message = payload.toString();
         // console.log(`Nachricht empfangen auf Topic '${topic}': "${message}"`);
@@ -181,7 +209,6 @@ try {
                 if (tempChart) {
                     tempChart.data.labels = labels;
                     tempChart.data.datasets[0].data = dataPoints;
-                    // Fülle die 'Zero'-Linie mit null-Werten, damit sie nicht angezeigt wird
                     tempChart.data.datasets[1].data = new Array(labels.length).fill(null);
                     tempChart.update();
                 } else {
@@ -194,7 +221,18 @@ try {
         // ----- SPEZIALFALL 2: Regen-History (Bar-Chart) -----
         } else if (mapping.id === 'regen-chart-jahresstat') {
             try {
-                // ... (unverändert) ...
+                const data = JSON.parse(message);
+                if (data && data[0]) {
+                    const chartData = data[0];
+                    if (regenChart) {
+                        regenChart.data.labels = chartData.labels;
+                        regenChart.data.datasets[0].data = chartData.data;
+                        regenChart.data.datasets[0].label = chartData.series[0] || 'Regenmenge (mm)';
+                        regenChart.update();
+                    } else {
+                         console.warn('Regen-Chart war bei Eintreffen der Nachricht noch nicht bereit.');
+                    }
+                }
             } catch (e) {
                 console.error('Fehler bei Regen-History:', e);
             }
@@ -207,14 +245,12 @@ try {
 
             if (tempChart) {
                 const now = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-                // Letzten Wert von Linie 2 holen (oder null), um die Linie fortzusetzen
                 const lastDataPoint1 = tempChart.data.datasets[1].data.slice(-1)[0] || null;
 
                 tempChart.data.labels.push(now);
                 tempChart.data.datasets[0].data.push(newValue);
-                tempChart.data.datasets[1].data.push(lastDataPoint1); // Linie 2 "wartet"
+                tempChart.data.datasets[1].data.push(lastDataPoint1);
 
-                // Trimmen, wenn zu lang (z.B. > 50 Punkte)
                 if (tempChart.data.labels.length > 50) {
                     tempChart.data.labels.shift();
                     tempChart.data.datasets[0].data.shift();
@@ -224,19 +260,17 @@ try {
                 tempChart.update();
             }
 
-        // ----- NEUER SPEZIALFALL 4: 'Zero' Line (Linie 2) -----
+        // ----- SPEZIALFALL 4: 'Zero' Line (Linie 2) -----
         } else if (mapping.id === 'temp-chart-line-2') { // 'home/zero'
             if (tempChart) {
                 const newValue = parseFloat(message).toFixed(1);
                 const now = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-                // Letzten Wert von Linie 1 holen (oder null), um die Linie fortzusetzen
                 const lastDataPoint0 = tempChart.data.datasets[0].data.slice(-1)[0] || null;
 
                 tempChart.data.labels.push(now);
-                tempChart.data.datasets[0].data.push(lastDataPoint0); // Linie 1 "wartet"
-                tempChart.data.datasets[1].data.push(newValue); // Linie 2 bekommt neuen Wert
+                tempChart.data.datasets[0].data.push(lastDataPoint0);
+                tempChart.data.datasets[1].data.push(newValue);
 
-                // Trimmen, wenn zu lang
                 if (tempChart.data.labels.length > 50) {
                     tempChart.data.labels.shift();
                     tempChart.data.datasets[0].data.shift();
@@ -271,18 +305,50 @@ try {
         }
     });
 
-    client.on('error', (err) => { /* ... (unverändert) ... */ });
-    client.on('reconnect', () => { /* ... (unverändert) ... */ });
-    client.on('close', () => { /* ... (unverändert) ... */ });
-    client.on('offline', () => { /* ... (unverändert) ... */ });
+    client.on('error', (err) => {
+        console.error('🔥🔥🔥 MQTT Error Event ausgelöst! Fehler:', err);
+        statusElement.textContent = 'Verbindungsfehler!';
+        statusElement.style.backgroundColor = 'var(--pico-color-red-200)';
+        statusElement.style.color = 'var(--pico-color-red-700)';
+    });
+
+    client.on('reconnect', () => {
+        console.log('⏳ MQTT Reconnect Event ausgelöst! Versuche Wiederverbindung...');
+        statusElement.textContent = 'Wiederverbindung...';
+        statusElement.style.backgroundColor = 'var(--pico-color-orange-200)';
+        statusElement.style.color = 'var(--pico-color-orange-700)';
+    });
+
+    client.on('close', () => {
+        console.log('🚪 MQTT Close Event ausgelöst! Verbindung geschlossen.');
+    });
+
+    client.on('offline', () => {
+        console.log('🔌 MQTT Offline Event ausgelöst! Client ist offline.');
+        statusElement.textContent = 'Offline';
+        statusElement.style.backgroundColor = 'var(--pico-color-gray-300)';
+        statusElement.style.color = 'var(--pico-color-gray-700)';
+    });
 
 } catch (e) {
     console.error('💥💥💥 Kritischer Fehler BEIM AUFRUF von mqtt.connect:', e);
     statusElement.textContent = 'Init-Fehler!';
-    // ... (restlicher catch-Block)
+    statusElement.style.backgroundColor = 'var(--pico-color-red-200)';
+    statusElement.style.color = 'var(--pico-color-red-700)';
 }
 
 // --- Cookie Banner Logic ---
 document.addEventListener('DOMContentLoaded', () => {
-    // ... (unverändert) ...
+    const banner = document.getElementById('cookie-banner');
+    const acceptButton = document.getElementById('cookie-accept');
+
+    if (banner && acceptButton) {
+        if (!localStorage.getItem('cookieConsent')) {
+            banner.classList.remove('hidden');
+        }
+        acceptButton.addEventListener('click', () => {
+            localStorage.setItem('cookieConsent', 'true');
+            banner.classList.add('hidden');
+        });
+    }
 });
