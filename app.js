@@ -114,7 +114,7 @@ function initChart() {
                     label: 'Temperatur °C',
                     data: [],
                     borderWidth: 2,
-                    fill: false,
+                    fill: true,
                     tension: 0.1,
                     segment: {
                         borderColor: (ctx) => (ctx.p0 && ctx.p0.parsed) ? (ctx.p0.parsed.y < 0 ? 'var(--pico-color-blue-500)' : 'var(--pico-color-red-600)') : 'var(--pico-color-red-600)',
@@ -137,11 +137,11 @@ function initChart() {
                     label: 'Gefühlte Temp. °C',
                     data: [],
                     borderWidth: 2,
-                    fill: false,
+                    fill: true,
                     tension: 0.1,
                     borderColor: 'var(--pico-color-orange-500)',
                     pointBackgroundColor: 'var(--pico-color-orange-500)',
-                    pointBorderColor: 'var(--pico-color-orange-500)',
+                    pointBorderColor: '#ff0000',
                     pointRadius: 2,
                     borderDash: [5, 5]
                 }
