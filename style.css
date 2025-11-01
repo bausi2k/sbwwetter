@@ -1,4 +1,4 @@
-/* style.css (BEREINIGTE VERSION V17) */
+/* style.css (BEREINIGTE VERSION V18) */
 
 /* Überschrift des Dashboards zentrieren */
 header {
@@ -48,19 +48,20 @@ article header {
 
 /* Desktop-Layout (alles über 768px Breite) */
 @media (min-width: 768px) {
-    /* Zeile 1 hat 3 Spalten */
+    /* Zeile 1 hat 4 Spalten */
     #row-1 {
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
     }
     /* Zeile 2 hat 5 Spalten */
     #row-2 {
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     }
 }
-/* Verhindert, dass die Schrift in der 5-Spalten-Ansicht zu groß ist */
 @media (min-width: 768px) and (max-width: 1024px) {
+    /* Kleinere Schrift auf Tablets, wenn viele Spalten */
+    #row-1 .data,
     #row-2 .data {
-        font-size: 2em; /* Etwas kleinere Schrift auf Tablets */
+        font-size: 2em;
     }
 }
 
@@ -90,7 +91,7 @@ article header {
     color: var(--pico-primary);
 }
 
-/* --- MÜLL & UNWETTER & PROGNOSE & WIND STILE --- */
+/* --- MÜLL & UNWETTER & PROGNOSE STILE --- */
 
 /* Basis-Stil für Müll-Widgets */
 #muell-naechste {
@@ -201,24 +202,26 @@ article.unwetter-inaktiv .data {
 }
 
 
-/* Basis-Stil für Prognose */
-#wetter-prognose {
-    font-size: 1.25em; /* Kleinere Schrift für Text */
+/* Stile für Prognose-Widgets */
+#wetter-prognose,
+#wetter-prognose-heute {
+    font-size: 1.25em;
     font-weight: normal;
-    color: var(--pico-secondary); /* Neutrale Farbe */
+    color: var(--pico-secondary);
     min-height: 2.5em;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 0.5rem; /* Etwas Platz links/rechts, falls Text lang wird */
+    padding: 0 0.5rem;
 }
-/* Styling für das Prognose Widget selbst */
-article#widget-prognose {
+article#widget-prognose,
+article#widget-prognose-heute {
      background-color: #fbfcfc;
      border: 2px solid var(--pico-muted-border-color);
 }
-article#widget-prognose header strong {
-    color: var(--pico-muted-color); /* Header neutral färben */
+article#widget-prognose header strong,
+article#widget-prognose-heute header strong {
+    color: var(--pico-muted-color);
 }
 
 /* Stil für Wind (aktuell nur Standard .data) */

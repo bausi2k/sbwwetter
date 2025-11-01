@@ -6,6 +6,7 @@ const HIVE_MQ_PASS = 'pbd7chu6kba!zrd2GTG';
 
 // --- Flexible Topic-Zuordnung ---
 const topicMap = {
+    // Live-Werte (Text)
     'home/temp/auszen': { id: 'aussen-temp', unit: ' °C', chartId: 'line-1' },
     'home/luftfeuchte/aktuell': { id: 'aussen-luft', unit: ' %' },
     'home/regen/status': {
@@ -14,12 +15,16 @@ const topicMap = {
         formatter: (payload) => (payload === '1' ? 'Ja 🌧️' : 'Nein ☀️')
     },
     'home/wind/now': { id: 'wind-now', unit: ' km/h' },
+    
+    // Live-Werte (Text + Chart)
     'home/zero': { id: 'temp-chart-line-2', chartId: 'line-2' },
     'home/webservice/gefuehltetemperatur': {
         id: 'gefuehlte-temp',
         unit: ' °C',
         chartId: 'line-3'
     },
+
+    // Kacheln
     'gasse/müll/nächste': { id: 'muell-naechste', unit: '', widgetId: 'widget-muell-naechste' },
     'gasse/unwetter': {
         id: 'unwetter-warnung',
@@ -28,6 +33,9 @@ const topicMap = {
         formatter: (payload) => (!payload || payload.trim() === '') ? "keine Unwetterinformationen" : payload
     },
     'home/wetter/prognose/morgen': { id: 'wetter-prognose', unit: '', widgetId: 'widget-prognose' },
+    'home/wetter/prognose/heute': { id: 'wetter-prognose-heute', unit: '', widgetId: 'widget-prognose-heute' },
+    
+    // Regen-Tab
     'home/regen/jahresstat': { id: 'regen-chart-jahresstat' },
     'home/regen/stat7d': { id: 'regen-7d', unit: ' mm' },
     'home/regen/stat14d': { id: 'regen-14d', unit: ' mm' },
@@ -35,6 +43,8 @@ const topicMap = {
     'home/regen/stat3m': { id: 'regen-3m', unit: ' mm' },
     'home/regen/stat6m': { id: 'regen-6m', unit: ' mm' },
     'home/regen/stat12m': { id: 'regen-12m', unit: ' mm' },
+
+    // History-Topics
     'haus/historie/aussentemperatur_24h': { id: 'aussen-temp-chart' },
     'haus/historie/gef_aussentemperatur_24h': { id: 'gefuehlte-temp-chart' }
 };
@@ -92,7 +102,6 @@ function initRegenChart() {
     regenChart = window.myBarChart;
 }
 
-// ### KORRIGIERTE `initChart` FUNKTION (mit festen Hex-Farben) ###
 function initChart() {
     const canvasElement = document.getElementById('tempChartCanvas');
     if (!canvasElement) return;
@@ -115,7 +124,7 @@ function initChart() {
                     label: 'Temperatur °C',
                     data: [],
                     borderWidth: 2,
-                    fill: false, // Korrigiert
+                    fill: false,
                     tension: 0.1,
                     segment: {
                         borderColor: (ctx) => (ctx.p0 && ctx.p0.parsed) ? (ctx.p0.parsed.y < 0 ? farbeBlau : farbeRot) : farbeRot,
@@ -140,13 +149,13 @@ function initChart() {
                     label: 'Gefühlte Temp. °C',
                     data: [],
                     borderWidth: 2,
-                    fill: false, // Korrigiert
+                    fill: false,
                     tension: 0.1,
                     borderColor: farbeOrange,
                     pointBackgroundColor: farbeOrange,
-                    pointBorderColor: farbeOrange, // Korrigiert (war #ff0000)
+                    pointBorderColor: farbeOrange,
                     pointRadius: 2,
-                    borderDash: [5, 5]
+                    borderDash: [5, 5] // Gestrichelte Linie
                 }
             ]
         },
@@ -162,6 +171,7 @@ function initChart() {
                     display: true,
                     position: 'top',
                     labels: {
+                        // Filtert "Zero Line" aus der Legende
                         filter: function(legendItem, chartData) {
                             return legendItem.text !== 'Zero Line';
                         }
@@ -181,7 +191,7 @@ initRegenChart();
 console.log('Charts initialisiert.');
 
 
-// --- 5. MQTT verbinden ---
+// --- 5. MQTT verbinden (ERST NACHDEM DIE CHARTS INITIALISIERT SIND) ---
 const clientUrl = `wss://${HIVE_MQ_HOST}:${HIVE_MQ_PORT}/mqtt`;
 const options = {
     clientId: 'mein-web-dashboard-' + Math.random().toString(16).substr(2, 8),
@@ -330,6 +340,8 @@ try {
                 if (!widgetElement) { console.error(`Widget-Element mit ID "${mapping.widgetId}" nicht gefunden!`); return; }
                 if (topic.includes('gasse/müll')) { setMuellStyle(widgetElement, message); }
                 if (topic.includes('gasse/unwetter')) { setUnwetterStyle(widgetElement, message); }
+                // Styling für Prognose könnte hier hin
+                // if (topic.includes('wetter/prognose')) { setPrognoseStyle(widgetElement, message); }
             }
         }
     });
