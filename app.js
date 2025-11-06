@@ -17,7 +17,7 @@ const topicMap = {
     'home/wind/now': { id: 'wind-now', unit: ' km/h' },
     
     // Live-Werte (Text + Chart)
-    'home/zero': { id: 'temp-chart-line-2', chartId: 'line-2' },
+    // 'home/zero' (Linie 2) wird statisch erzeugt
     'home/webservice/gefuehltetemperatur': {
         id: 'gefuehlte-temp',
         unit: ' °C',
@@ -109,10 +109,11 @@ function initChart() {
     if (window.myLineChart) window.myLineChart.destroy();
 
     // Farben als feste Hex-Codes
-    const farbeBlau = '#2196F3';   // Pico Blue 500
-    const farbeRot = '#D32F2F';     // Pico Red 600
-    const farbeGruen = '#4CAF50';   // Pico Green 500
-    const farbeOrange = '#FF9800';  // Pico Orange 500
+    const farbeBlau = '#2196F3';
+    const farbeRot = '#D32F2F';
+    const farbeHellBlau = '#B3D9FF';
+    const farbeHellRot = '#FFB3B3';
+    const farbeGrau = '#DDDDDD';
 
     window.myLineChart = new Chart(ctx, {
         type: 'line',
@@ -120,12 +121,12 @@ function initChart() {
             labels: [],
             datasets: [
                 {
-                    // DATASET 0: Temperatur
                     label: 'Temperatur °C',
                     data: [],
                     borderWidth: 2,
                     fill: false,
                     tension: 0.1,
+					backgroundColor: farbeRot,
                     segment: {
                         borderColor: (ctx) => (ctx.p0 && ctx.p0.parsed) ? (ctx.p0.parsed.y < 0 ? farbeBlau : farbeRot) : farbeRot,
                     },
@@ -133,29 +134,28 @@ function initChart() {
                     pointBorderColor: (ctx) => (ctx.parsed) ? (ctx.parsed.y < 0 ? farbeBlau : farbeRot) : farbeRot
                 },
                 {
-                    // DATASET 1: 'Zero' LINIE
                     label: 'Zero Line',
-                    data: [],
+                    data: [], // Wird jetzt statisch gefüllt
                     borderWidth: 2,
                     fill: false,
                     tension: 0.1,
-                    borderColor: farbeGruen,
-                    pointBackgroundColor: farbeGruen,
-                    pointBorderColor: farbeGruen,
-                    pointRadius: 2
+                    borderColor: farbeGrau,
+                    pointBackgroundColor: farbeGrau,
+                    pointBorderColor: farbeGrau,
+                    pointRadius: 0
                 },
                 {
-                    // DATASET 2: 'Gefühlte' LINIE
                     label: 'Gefühlte Temp. °C',
                     data: [],
-                    borderWidth: 2,
-                    fill: false,
+                    borderWidth: 1,
+                    fill: true,
                     tension: 0.1,
-                    borderColor: farbeOrange,
-                    pointBackgroundColor: farbeOrange,
-                    pointBorderColor: farbeOrange,
-                    pointRadius: 2,
-                    borderDash: [5, 5] // Gestrichelte Linie
+					backgroundColor: farbeHellRot + '55',
+                    borderColor: farbeHellRot,
+                    pointBackgroundColor: farbeHellRot,
+                    pointBorderColor: farbeHellRot,
+                    pointRadius: 1,
+                    borderDash: [5, 5]
                 }
             ]
         },
@@ -171,7 +171,6 @@ function initChart() {
                     display: true,
                     position: 'top',
                     labels: {
-                        // Filtert "Zero Line" aus der Legende
                         filter: function(legendItem, chartData) {
                             return legendItem.text !== 'Zero Line';
                         }
@@ -191,7 +190,7 @@ initRegenChart();
 console.log('Charts initialisiert.');
 
 
-// --- 5. MQTT verbinden (ERST NACHDEM DIE CHARTS INITIALISIERT SIND) ---
+// --- 5. MQTT verbinden ---
 const clientUrl = `wss://${HIVE_MQ_HOST}:${HIVE_MQ_PORT}/mqtt`;
 const options = {
     clientId: 'mein-web-dashboard-' + Math.random().toString(16).substr(2, 8),
@@ -237,7 +236,8 @@ try {
                 if (tempChart) {
                     tempChart.data.labels = labels;
                     tempChart.data.datasets[0].data = dataPoints;
-                    tempChart.data.datasets[1].data = new Array(labels.length).fill(null); 
+                    // Fülle Linie 1 (Zero) statisch mit 0
+                    tempChart.data.datasets[1].data = new Array(labels.length).fill(0); 
                     tempChart.data.datasets[2].data = new Array(labels.length).fill(null);
                     tempChart.update();
                 } else {
@@ -280,7 +280,7 @@ try {
                  console.error('Fehler bei Gefuehlte-Temp-History:', e);
             }
             
-        // ----- SPEZIALFALL 4: Live-Chart-Daten (Temp, Zero, Gefühlt) -----
+        // ----- SPEZIALFALL 4: Live-Chart-Daten (Temp, Gefühlt) -----
         } else if (mapping.chartId) {
             const newValue = parseFloat(message).toFixed(1);
             
@@ -292,20 +292,17 @@ try {
             if (tempChart) {
                 const now = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
                 const lastPoints = tempChart.data.datasets.map(ds => ds.data.slice(-1)[0] || null);
+                const staticZero = 0; // Statischer 0-Wert
 
                 tempChart.data.labels.push(now);
                 
                 if (mapping.chartId === 'line-1') {
                     tempChart.data.datasets[0].data.push(newValue);
-                    tempChart.data.datasets[1].data.push(lastPoints[1]);
+                    tempChart.data.datasets[1].data.push(staticZero);
                     tempChart.data.datasets[2].data.push(lastPoints[2]);
-                } else if (mapping.chartId === 'line-2') {
+                } else if (mapping.chartId === 'line-3') { // 'line-2' (home/zero) wird nicht mehr per MQTT aktualisiert
                     tempChart.data.datasets[0].data.push(lastPoints[0]);
-                    tempChart.data.datasets[1].data.push(newValue);
-                    tempChart.data.datasets[2].data.push(lastPoints[2]);
-                } else if (mapping.chartId === 'line-3') {
-                    tempChart.data.datasets[0].data.push(lastPoints[0]);
-                    tempChart.data.datasets[1].data.push(lastPoints[1]);
+                    tempChart.data.datasets[1].data.push(staticZero);
                     tempChart.data.datasets[2].data.push(newValue);
                 }
 
@@ -340,8 +337,6 @@ try {
                 if (!widgetElement) { console.error(`Widget-Element mit ID "${mapping.widgetId}" nicht gefunden!`); return; }
                 if (topic.includes('gasse/müll')) { setMuellStyle(widgetElement, message); }
                 if (topic.includes('gasse/unwetter')) { setUnwetterStyle(widgetElement, message); }
-                // Styling für Prognose könnte hier hin
-                // if (topic.includes('wetter/prognose')) { setPrognoseStyle(widgetElement, message); }
             }
         }
     });
