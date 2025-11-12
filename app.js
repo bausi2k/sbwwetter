@@ -6,7 +6,6 @@ const HIVE_MQ_PASS = 'pbd7chu6kba!zrd2GTG';
 
 // --- Flexible Topic-Zuordnung ---
 const topicMap = {
-    // Live-Werte (Text)
     'home/temp/auszen': { id: 'aussen-temp', unit: ' °C', chartId: 'line-1' },
     'home/luftfeuchte/aktuell': { id: 'aussen-luft', unit: ' %' },
     'home/regen/status': {
@@ -15,16 +14,11 @@ const topicMap = {
         formatter: (payload) => (payload === '1' ? 'Ja 🌧️' : 'Nein ☀️')
     },
     'home/wind/now': { id: 'wind-now', unit: ' km/h' },
-    
-    // Live-Werte (Text + Chart)
-    // 'home/zero' (Linie 2) wird statisch erzeugt
     'home/webservice/gefuehltetemperatur': {
         id: 'gefuehlte-temp',
         unit: ' °C',
         chartId: 'line-3'
     },
-
-    // Kacheln
     'gasse/müll/nächste': { id: 'muell-naechste', unit: '', widgetId: 'widget-muell-naechste' },
     'gasse/unwetter': {
         id: 'unwetter-warnung',
@@ -34,8 +28,6 @@ const topicMap = {
     },
     'home/wetter/prognose/morgen': { id: 'wetter-prognose', unit: '', widgetId: 'widget-prognose' },
     'home/wetter/prognose/heute': { id: 'wetter-prognose-heute', unit: '', widgetId: 'widget-prognose-heute' },
-    
-    // Regen-Tab
     'home/regen/jahresstat': { id: 'regen-chart-jahresstat' },
     'home/regen/stat7d': { id: 'regen-7d', unit: ' mm' },
     'home/regen/stat14d': { id: 'regen-14d', unit: ' mm' },
@@ -43,8 +35,6 @@ const topicMap = {
     'home/regen/stat3m': { id: 'regen-3m', unit: ' mm' },
     'home/regen/stat6m': { id: 'regen-6m', unit: ' mm' },
     'home/regen/stat12m': { id: 'regen-12m', unit: ' mm' },
-
-    // History-Topics
     'haus/historie/aussentemperatur_24h': { id: 'aussen-temp-chart' },
     'haus/historie/gef_aussentemperatur_24h': { id: 'gefuehlte-temp-chart' }
 };
@@ -87,8 +77,8 @@ function initRegenChart() {
             datasets: [{
                 label: 'Regenmenge (mm)',
                 data: [],
-                backgroundColor: '#2196F3', // Feste Hex-Farbe
-                borderColor: '#1976D2',     // Feste Hex-Farbe
+                backgroundColor: '#2196F3',
+                borderColor: '#1976D2',
                 borderWidth: 1
             }]
         },
@@ -108,12 +98,12 @@ function initChart() {
     const ctx = canvasElement.getContext('2d');
     if (window.myLineChart) window.myLineChart.destroy();
 
-    // Farben als feste Hex-Codes
+    // Farben als feste Hex-Codes (deine Version)
     const farbeBlau = '#2196F3';
     const farbeRot = '#D32F2F';
     const farbeHellBlau = '#B3D9FF';
     const farbeHellRot = '#FFB3B3';
-    const farbeGrau = '#DDDDDD';
+    const farbeGrau = '#DDDDDD'; // Zero Line Farbe
 
     window.myLineChart = new Chart(ctx, {
         type: 'line',
@@ -121,12 +111,13 @@ function initChart() {
             labels: [],
             datasets: [
                 {
+                    // DATASET 0: Temperatur
                     label: 'Temperatur °C',
                     data: [],
                     borderWidth: 2,
-                    fill: false,
+                    fill: false, // Korrigiert
                     tension: 0.1,
-					backgroundColor: farbeRot,
+                    backgroundColor: farbeRot,
                     segment: {
                         borderColor: (ctx) => (ctx.p0 && ctx.p0.parsed) ? (ctx.p0.parsed.y < 0 ? farbeBlau : farbeRot) : farbeRot,
                     },
@@ -134,8 +125,9 @@ function initChart() {
                     pointBorderColor: (ctx) => (ctx.parsed) ? (ctx.parsed.y < 0 ? farbeBlau : farbeRot) : farbeRot
                 },
                 {
+                    // DATASET 1: 'Zero' LINIE
                     label: 'Zero Line',
-                    data: [], // Wird jetzt statisch gefüllt
+                    data: [], // Wird statisch gefüllt
                     borderWidth: 2,
                     fill: false,
                     tension: 0.1,
@@ -145,12 +137,13 @@ function initChart() {
                     pointRadius: 0
                 },
                 {
+                    // DATASET 2: 'Gefühlte' LINIE
                     label: 'Gefühlte Temp. °C',
                     data: [],
                     borderWidth: 1,
-                    fill: true,
+                    fill: true, // Behalte dein 'fill: true' bei
                     tension: 0.1,
-					backgroundColor: farbeHellRot + '55',
+                    backgroundColor: farbeHellRot + '55', // Dein semi-transparenter Fill
                     borderColor: farbeHellRot,
                     pointBackgroundColor: farbeHellRot,
                     pointBorderColor: farbeHellRot,
@@ -236,9 +229,15 @@ try {
                 if (tempChart) {
                     tempChart.data.labels = labels;
                     tempChart.data.datasets[0].data = dataPoints;
-                    // Fülle Linie 1 (Zero) statisch mit 0
                     tempChart.data.datasets[1].data = new Array(labels.length).fill(0); 
-                    tempChart.data.datasets[2].data = new Array(labels.length).fill(null);
+                    
+                    // ### HIER IST DIE KORREKTUR ###
+                    // Wir füllen Linie 2 (Gefühlt) nur dann mit 'null', 
+                    // wenn sie noch nicht durch die andere Nachricht gefüllt wurde.
+                    if (!tempChart.data.datasets[2].data || tempChart.data.datasets[2].data.length === 0) {
+                        tempChart.data.datasets[2].data = new Array(labels.length).fill(null);
+                    }
+                    
                     tempChart.update();
                 } else {
                     console.warn('Temperatur-Chart war bei Eintreffen der History-Nachricht noch nicht bereit.');
